@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { DictionaryWord } from '../types/dictionary';
+import { Button } from "@/components/ui/button";
+import { Eye, EyeOff } from 'lucide-react';
 
 interface TranslationResultsProps {
   sourceText: string;
@@ -15,6 +17,8 @@ const TranslationResults: React.FC<TranslationResultsProps> = ({
   fromLanguage,
   toLanguage
 }) => {
+  const [showDictionary, setShowDictionary] = React.useState(true);
+  
   // Generate the full translated text
   const translatedText = React.useMemo(() => {
     return results.map(word => word.dolgan).join('');
@@ -56,10 +60,21 @@ const TranslationResults: React.FC<TranslationResultsProps> = ({
             </div>
           </div>
           
-          {/* Individual words by category */}
+          {/* Dictionary section with toggle */}
           <div>
-            <h3 className="font-medium px-4 pt-3 pb-1">Словарь:</h3>
-            {Object.entries(resultsByCategory).map(([category, words]) => (
+            <div className="flex justify-between items-center px-4 pt-3 pb-1">
+              <h3 className="font-medium">Словарь:</h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowDictionary(!showDictionary)}
+                className="h-8 w-8"
+              >
+                {showDictionary ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </Button>
+            </div>
+            
+            {showDictionary && Object.entries(resultsByCategory).map(([category, words]) => (
               <div key={category}>
                 <div className="ios-section-header">{category}</div>
                 {words.map((word, index) => (
