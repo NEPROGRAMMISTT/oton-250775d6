@@ -1,11 +1,12 @@
 
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import StatusBar from '../components/StatusBar';
 import NavigationBar from '../components/NavigationBar';
 import DictionaryInfo from '../components/DictionaryInfo';
 import { Dictionary, DictionaryWord } from '../types/dictionary';
 import { dictionaryService } from '../services/dictionaryService';
+import { useIsMobile } from '../hooks/use-mobile';
 
 const DictionaryDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,6 +14,7 @@ const DictionaryDetailPage: React.FC = () => {
   const [dictionary, setDictionary] = React.useState<Dictionary | null>(null);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filteredWords, setFilteredWords] = React.useState<DictionaryWord[]>([]);
+  const isMobile = useIsMobile();
 
   React.useEffect(() => {
     if (id) {
@@ -75,9 +77,17 @@ const DictionaryDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="ios-container pb-6">
+    <div className="ios-container pb-6 max-w-full md:max-w-4xl lg:max-w-6xl mx-auto">
       <StatusBar />
-      <NavigationBar title="Словарь" showBackButton />
+      <NavigationBar 
+        title="Словарь" 
+        showBackButton
+        rightElement={
+          <Link to={`/dictionary/edit/${id}`} className="text-ios-primary font-medium">
+            Редактировать
+          </Link>
+        }
+      />
       
       <div className="p-4 space-y-4">
         <DictionaryInfo dictionary={dictionary} onExport={handleExportDictionary} />
@@ -95,19 +105,21 @@ const DictionaryDetailPage: React.FC = () => {
             {filteredWords.length} из {dictionary.words.length} слов
           </div>
           
-          {Object.entries(wordsByCategory).map(([category, words]) => (
-            <div key={category} className="mb-4">
-              <div className="ios-section-header">{category}</div>
-              <div className="ios-card overflow-hidden">
-                {words.map((word, index) => (
-                  <div key={index} className="ios-list-item last:border-b-0">
-                    <div className="font-medium">{word.russian}</div>
-                    <div className="text-ios-primary">{word.dolgan}</div>
-                  </div>
-                ))}
+          <div className={`${!isMobile && Object.keys(wordsByCategory).length > 1 ? 'grid grid-cols-2 gap-4' : ''}`}>
+            {Object.entries(wordsByCategory).map(([category, words]) => (
+              <div key={category} className="mb-4">
+                <div className="ios-section-header">{category}</div>
+                <div className="ios-card overflow-hidden">
+                  {words.map((word, index) => (
+                    <div key={index} className="ios-list-item last:border-b-0">
+                      <div className="font-medium">{word.russian}</div>
+                      <div className="text-ios-primary">{word.dolgan}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
           
           {filteredWords.length === 0 && (
             <div className="text-center text-ios-text-secondary p-4">

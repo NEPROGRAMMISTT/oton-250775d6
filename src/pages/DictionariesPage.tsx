@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import StatusBar from '../components/StatusBar';
 import NavigationBar from '../components/NavigationBar';
 import DictionaryList from '../components/DictionaryList';
@@ -8,9 +9,11 @@ import TabBar from '../components/TabBar';
 import { Dictionary } from '../types/dictionary';
 import { dictionaryService } from '../services/dictionaryService';
 import { toast } from '../components/ui/use-toast';
+import { useIsMobile } from '../hooks/use-mobile';
 
 const DictionariesPage: React.FC = () => {
   const [dictionaries, setDictionaries] = React.useState<Dictionary[]>([]);
+  const isMobile = useIsMobile();
 
   React.useEffect(() => {
     // Load dictionaries on component mount
@@ -38,19 +41,32 @@ const DictionariesPage: React.FC = () => {
   };
 
   return (
-    <div className="ios-container pb-16">
+    <div className="ios-container pb-16 max-w-full md:max-w-4xl lg:max-w-6xl mx-auto">
       <StatusBar />
-      <NavigationBar title="Словари" />
+      <NavigationBar 
+        title="Словари" 
+        rightElement={
+          <Link to="/dictionary/edit/new" className="text-ios-primary font-medium">
+            Создать
+          </Link>
+        }
+      />
       
       <div className="p-4 space-y-4">
-        <h2 className="text-lg font-medium mb-2">Доступные словари</h2>
-        
-        <DictionaryList 
-          dictionaries={dictionaries} 
-          onDeleteDictionary={handleDeleteDictionary} 
-        />
-        
-        <DictionaryImport onImport={handleImportDictionary} />
+        <div className={`${!isMobile ? 'grid grid-cols-2 gap-4' : 'space-y-4'}`}>
+          <div>
+            <h2 className="text-lg font-medium mb-2">Доступные словари</h2>
+            <DictionaryList 
+              dictionaries={dictionaries} 
+              onDeleteDictionary={handleDeleteDictionary} 
+            />
+          </div>
+          
+          <div>
+            <h2 className="text-lg font-medium mb-2">Импортировать словарь</h2>
+            <DictionaryImport onImport={handleImportDictionary} />
+          </div>
+        </div>
       </div>
       
       <TabBar />

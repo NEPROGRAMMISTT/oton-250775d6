@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dictionary, DictionaryWord } from '../types/dictionary';
 
@@ -17,17 +16,57 @@ const TranslatorInput: React.FC<TranslatorInputProps> = ({
     const text = e.target.value;
     setInputText(text);
     
-    // Find matching words in dictionary
-    const words = text.toLowerCase().split(/\s+/).filter(word => word);
-    const results = words.reduce((acc: DictionaryWord[], word) => {
-      const found = dictionary.words.find(
-        dictWord => dictWord.russian.toLowerCase() === word.toLowerCase()
-      );
-      if (found) acc.push(found);
-      return acc;
-    }, []);
-    
-    onTranslate(text, results);
+    // Improved translation logic that preserves formatting
+    if (text.trim()) {
+      // Split text into words, preserving punctuation and spaces
+      const regex = /([а-яА-ЯёЁ]+|[^а-яА-ЯёЁ\s]+|\s+)/g;
+      const tokens = text.match(regex) || [];
+      
+      const results: DictionaryWord[] = [];
+      
+      tokens.forEach(token => {
+        // If it's a Russian word, try to translate it
+        if (/[а-яА-ЯёЁ]+/.test(token)) {
+          // Normalize the token (lowercase and replace 'ё' with 'е')
+          const normalizedToken = token.toLowerCase().replace(/ё/g, 'е');
+          
+          // Find in dictionary (case-insensitive)
+          const found = dictionary.words.find(
+            dictWord => dictWord.russian.toLowerCase().replace(/ё/g, 'е') === normalizedToken
+          );
+          
+          if (found) {
+            // Create a copy to preserve the original formatting
+            const resultWord = { ...found };
+            
+            // If the original token was capitalized, capitalize the translation
+            if (token[0] === token[0].toUpperCase()) {
+              resultWord.dolgan = resultWord.dolgan.charAt(0).toUpperCase() + resultWord.dolgan.slice(1);
+            }
+            
+            results.push(resultWord);
+          } else {
+            // Word not found in dictionary, keep original
+            results.push({
+              category: "not-found",
+              russian: token,
+              dolgan: token
+            });
+          }
+        } else {
+          // Non-Russian word (punctuation, space, etc.), keep as is
+          results.push({
+            category: "formatting",
+            russian: token,
+            dolgan: token
+          });
+        }
+      });
+      
+      onTranslate(text, results);
+    } else {
+      onTranslate('', []);
+    }
   };
 
   return (
@@ -36,7 +75,7 @@ const TranslatorInput: React.FC<TranslatorInputProps> = ({
       <textarea
         value={inputText}
         onChange={handleInputChange}
-        className="ios-input min-h-[100px] resize-none"
+        className="ios-input min-h-[100px] resize-none w-full"
         placeholder="Введите текст на русском языке..."
       />
     </div>
