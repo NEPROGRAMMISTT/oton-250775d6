@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -18,7 +19,21 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
+			},
 			colors: {
+				ios: {
+					background: '#F2F2F7',
+					card: '#FFFFFF',
+					primary: '#007AFF',
+					secondary: '#5AC8FA',
+					gray: '#8E8E93',
+					lightgray: '#D1D1D6',
+					separator: '#C6C6C8',
+					text: '#000000',
+					'text-secondary': '#6C6C70',
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
