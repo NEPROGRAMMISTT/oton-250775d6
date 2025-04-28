@@ -5,7 +5,7 @@ export interface DictionaryInfo {
   from_language: string;
   to_language: string;
   parameters: string;
-  categories: string;
+  categories: string | string[];
   social_media: Record<string, string>;
 }
 
