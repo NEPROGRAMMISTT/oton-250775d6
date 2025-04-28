@@ -9,7 +9,11 @@ interface DictionaryInfoProps {
 
 const DictionaryInfo: React.FC<DictionaryInfoProps> = ({ dictionary, onExport }) => {
   const { info } = dictionary;
-  const categories = info.categories.split(',').filter(Boolean);
+  
+  // Handle categories properly whether it's a string or an array
+  const categories = Array.isArray(info.categories) 
+    ? info.categories 
+    : info.categories.split(',').filter(Boolean);
 
   return (
     <div className="ios-card">
