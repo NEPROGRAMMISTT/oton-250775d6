@@ -10,6 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Button } from "@/components/ui/button";
 
 interface DictionaryInfoProps {
   dictionary: Dictionary;
@@ -87,7 +88,7 @@ const DictionaryInfo: React.FC<DictionaryInfoProps> = ({ dictionary, onExport })
                   <PaginationItem>
                     <PaginationPrevious 
                       onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                      disabled={currentPage === 1}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
                     />
                   </PaginationItem>
                   
@@ -105,7 +106,7 @@ const DictionaryInfo: React.FC<DictionaryInfoProps> = ({ dictionary, onExport })
                   <PaginationItem>
                     <PaginationNext 
                       onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                      disabled={currentPage === totalPages}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
                     />
                   </PaginationItem>
                 </PaginationContent>
