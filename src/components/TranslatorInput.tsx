@@ -73,7 +73,7 @@ const TranslatorInput: React.FC<TranslatorInputProps> = ({
       }
 
       // Try to find multi-word phrases by combining consecutive Russian tokens
-      let maxWordsToCheck = 5; // Maximum phrase length to check
+      let maxWordsToCheck = 256; // Увеличенный максимум слов для проверки
       let found = false;
       
       for (let phraseLength = maxWordsToCheck; phraseLength > 0; phraseLength--) {
@@ -132,6 +132,37 @@ const TranslatorInput: React.FC<TranslatorInputProps> = ({
       // If no phrase found, translate single word
       if (!found) {
         const word = tokens[i];
+        
+        // Check if the token is a number
+        if (/^\d+$/.test(word)) {
+          const numberWord = convertNumberToWord(word);
+          if (numberWord) {
+            const normalizedNumberWord = normalizeRussian(numberWord);
+            const translatedNumberWord = wordDictionary.get(normalizedNumberWord);
+            if (translatedNumberWord) {
+              resultTokens.push({
+                category: "number",
+                russian: word + ` (${numberWord})`,
+                dolgan: translatedNumberWord.dolgan
+              });
+            } else {
+              resultTokens.push({
+                category: "number",
+                russian: word + ` (${numberWord})`,
+                dolgan: word
+              });
+            }
+          } else {
+            resultTokens.push({
+              category: "not-found",
+              russian: word,
+              dolgan: word
+            });
+          }
+          i++;
+          continue;
+        }
+        
         const normalizedWord = normalizeRussian(word);
         
         if (wordDictionary.has(normalizedWord)) {
@@ -145,39 +176,12 @@ const TranslatorInput: React.FC<TranslatorInputProps> = ({
           
           resultTokens.push(resultWord);
         } else {
-          // Handle numbers conversion
-          if (/^\d+$/.test(word)) {
-            const numberWord = convertNumberToWord(word);
-            if (numberWord) {
-              const translatedNumberWord = wordDictionary.get(normalizeRussian(numberWord));
-              if (translatedNumberWord) {
-                resultTokens.push({
-                  category: "number",
-                  russian: word + ` (${numberWord})`,
-                  dolgan: translatedNumberWord.dolgan
-                });
-              } else {
-                resultTokens.push({
-                  category: "number",
-                  russian: word + ` (${numberWord})`,
-                  dolgan: word
-                });
-              }
-            } else {
-              resultTokens.push({
-                category: "not-found",
-                russian: word,
-                dolgan: word
-              });
-            }
-          } else {
-            // Word not found in dictionary
-            resultTokens.push({
-              category: "not-found",
-              russian: word,
-              dolgan: word
-            });
-          }
+          // Word not found in dictionary
+          resultTokens.push({
+            category: "not-found",
+            russian: word,
+            dolgan: word
+          });
         }
         i++;
       }
@@ -190,19 +194,62 @@ const TranslatorInput: React.FC<TranslatorInputProps> = ({
   const convertNumberToWord = (numberStr: string): string | null => {
     const num = parseInt(numberStr, 10);
     
-    // Для простоты обрабатываем только числа до 20
-    if (isNaN(num) || num < 0 || num > 20) {
+    // Улучшенная функция для поддержки чисел до 999
+    if (isNaN(num) || num < 0 || num > 999) {
       return null;
     }
     
-    const numberWords = [
+    const units = [
       'ноль', 'один', 'два', 'три', 'четыре', 'пять', 
-      'шесть', 'семь', 'восемь', 'девять', 'десять',
-      'одиннадцать', 'двенадцать', 'тринадцать', 'четырнадцать', 'пятнадцать',
-      'шестнадцать', 'семнадцать', 'восемнадцать', 'девятнадцать', 'двадцать'
+      'шесть', 'семь', 'восемь', 'девять'
     ];
     
-    return numberWords[num];
+    const teens = [
+      'десять', 'одиннадцать', 'двенадцать', 'тринадцать', 'четырнадцать', 'пятнадцать',
+      'шестнадцать', 'семнадцать', 'восемнадцать', 'девятнадцать'
+    ];
+    
+    const tens = [
+      '', 'десять', 'двадцать', 'тридцать', 'сорок', 'пятьдесят', 
+      'шестьдесят', 'семьдесят', 'восемьдесят', 'девяносто'
+    ];
+    
+    const hundreds = [
+      '', 'сто', 'двести', 'триста', 'четыреста', 'пятьсот', 
+      'шестьсот', 'семьсот', 'восемьсот', 'девятьсот'
+    ];
+    
+    if (num === 0) return 'ноль';
+    
+    let result = '';
+    
+    // Обработка сотен
+    if (num >= 100) {
+      result += hundreds[Math.floor(num / 100)] + ' ';
+    }
+    
+    // Обработка десятков и единиц
+    const remainder = num % 100;
+    
+    if (remainder >= 10 && remainder < 20) {
+      // Числа 10-19 имеют специальные названия
+      result += teens[remainder - 10];
+    } else {
+      // Десятки и единицы отдельно
+      const tensDigit = Math.floor(remainder / 10);
+      const unitsDigit = remainder % 10;
+      
+      if (tensDigit > 0) {
+        result += tens[tensDigit];
+        if (unitsDigit > 0) result += ' ';
+      }
+      
+      if (unitsDigit > 0 || num === 0) {
+        result += units[unitsDigit];
+      }
+    }
+    
+    return result.trim();
   };
 
   return (

@@ -44,7 +44,8 @@ const DictionaryDetailPage: React.FC = () => {
       const index = parseInt(id);
       if (index >= 0 && index < dictionaries.length) {
         setDictionary(dictionaries[index]);
-        setFilteredWords(dictionaries[index].words);
+        // Не загружаем все слова сразу
+        setFilteredWords([]);
       } else {
         navigate('/dictionaries');
       }
@@ -52,7 +53,7 @@ const DictionaryDetailPage: React.FC = () => {
   }, [id, navigate]);
 
   React.useEffect(() => {
-    if (dictionary) {
+    if (dictionary && (searchTerm.trim() !== '' || selectedCategory !== 'all')) {
       let filtered = dictionary.words;
       
       // Применяем фильтр категории
@@ -69,6 +70,9 @@ const DictionaryDetailPage: React.FC = () => {
       }
       
       setFilteredWords(filtered);
+    } else {
+      // Если нет поиска и категория all, не показываем все слова
+      setFilteredWords([]);
     }
   }, [dictionary, searchTerm, selectedCategory]);
 
@@ -138,37 +142,45 @@ const DictionaryDetailPage: React.FC = () => {
             </div>
           </div>
           
-          <div className="text-sm mb-4">
-            {filteredWords.length} {filteredWords.length === 1 ? 'слово' : 
-             (filteredWords.length > 1 && filteredWords.length < 5) ? 'слова' : 'слов'} 
-            {selectedCategory !== 'all' && ` в категории "${selectedCategory}"`}
-            {searchTerm && ` по запросу "${searchTerm}"`}
-          </div>
-          
-          {filteredWords.length > 0 ? (
-            <div className="overflow-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Слово (русский)</TableHead>
-                    <TableHead>Перевод (долганский)</TableHead>
-                    {selectedCategory === 'all' && <TableHead>Категория</TableHead>}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredWords.map((word, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{word.russian}</TableCell>
-                      <TableCell className="text-ios-primary">{word.dolgan}</TableCell>
-                      {selectedCategory === 'all' && <TableCell>{word.category || '-'}</TableCell>}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+          {(searchTerm.trim() !== '' || selectedCategory !== 'all') ? (
+            <>
+              <div className="text-sm mb-4">
+                {filteredWords.length} {filteredWords.length === 1 ? 'слово' : 
+                 (filteredWords.length > 1 && filteredWords.length < 5) ? 'слова' : 'слов'} 
+                {selectedCategory !== 'all' && ` в категории "${selectedCategory}"`}
+                {searchTerm && ` по запросу "${searchTerm}"`}
+              </div>
+              
+              {filteredWords.length > 0 ? (
+                <div className="overflow-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Слово (русский)</TableHead>
+                        <TableHead>Перевод (долганский)</TableHead>
+                        {selectedCategory === 'all' && <TableHead>Категория</TableHead>}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredWords.map((word, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="font-medium">{word.russian}</TableCell>
+                          <TableCell className="text-ios-primary">{word.dolgan}</TableCell>
+                          {selectedCategory === 'all' && <TableCell>{word.category || '-'}</TableCell>}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : (
+                <div className="text-center text-ios-text-secondary p-4">
+                  Слова не найдены
+                </div>
+              )}
+            </>
           ) : (
             <div className="text-center text-ios-text-secondary p-4">
-              Слова не найдены
+              Введите запрос для поиска или выберите категорию
             </div>
           )}
         </div>
