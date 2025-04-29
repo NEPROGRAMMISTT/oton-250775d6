@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import NavigationBar from '../components/NavigationBar';
@@ -9,7 +10,6 @@ import { Textarea } from '../components/ui/textarea';
 import { toast } from '../components/ui/use-toast';
 import TabBar from '../components/TabBar';
 import { useIsMobile } from '../hooks/use-mobile';
-import StatusBar from '../components/StatusBar';
 
 const DictionaryEditorPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -174,7 +174,6 @@ const DictionaryEditorPage: React.FC = () => {
 
   return (
     <div className="ios-container pb-16 max-w-full md:max-w-4xl lg:max-w-6xl mx-auto">
-      <StatusBar />
       <NavigationBar 
         title={isNew ? "Новый словарь" : "Редактировать словарь"} 
         showBackButton={true}
