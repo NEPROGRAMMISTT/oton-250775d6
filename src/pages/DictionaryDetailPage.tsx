@@ -6,14 +6,37 @@ import DictionaryInfo from '../components/DictionaryInfo';
 import { Dictionary, DictionaryWord } from '../types/dictionary';
 import { dictionaryService } from '../services/dictionaryService';
 import { useIsMobile } from '../hooks/use-mobile';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const DictionaryDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [dictionary, setDictionary] = React.useState<Dictionary | null>(null);
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
   const [filteredWords, setFilteredWords] = React.useState<DictionaryWord[]>([]);
   const isMobile = useIsMobile();
+
+  // Получаем уникальные категории из словаря
+  const categories = React.useMemo(() => {
+    if (!dictionary) return [];
+    
+    const uniqueCategories = new Set<string>();
+    dictionary.words.forEach(word => {
+      if (word.category) {
+        uniqueCategories.add(word.category);
+      }
+    });
+    
+    return Array.from(uniqueCategories).sort();
+  }, [dictionary]);
 
   React.useEffect(() => {
     if (id) {
@@ -28,6 +51,27 @@ const DictionaryDetailPage: React.FC = () => {
     }
   }, [id, navigate]);
 
+  React.useEffect(() => {
+    if (dictionary) {
+      let filtered = dictionary.words;
+      
+      // Применяем фильтр категории
+      if (selectedCategory !== 'all') {
+        filtered = filtered.filter(word => word.category === selectedCategory);
+      }
+      
+      // Применяем поиск текста
+      if (searchTerm.trim() !== '') {
+        filtered = filtered.filter(word => 
+          word.russian.toLowerCase().includes(searchTerm.toLowerCase()) || 
+          word.dolgan.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+      
+      setFilteredWords(filtered);
+    }
+  }, [dictionary, searchTerm, selectedCategory]);
+
   const handleExportDictionary = () => {
     if (dictionary) {
       dictionaryService.exportDictionary(dictionary);
@@ -35,35 +79,12 @@ const DictionaryDetailPage: React.FC = () => {
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value;
-    setSearchTerm(term);
-    
-    if (dictionary) {
-      if (term.trim() === '') {
-        setFilteredWords(dictionary.words);
-      } else {
-        const filtered = dictionary.words.filter(word => 
-          word.russian.toLowerCase().includes(term.toLowerCase()) || 
-          word.dolgan.toLowerCase().includes(term.toLowerCase())
-        );
-        setFilteredWords(filtered);
-      }
-    }
+    setSearchTerm(e.target.value);
   };
 
-  // Group words by category for display
-  const wordsByCategory = React.useMemo(() => {
-    if (!filteredWords.length) return {};
-    
-    return filteredWords.reduce((acc: Record<string, DictionaryWord[]>, word) => {
-      const category = word.category || 'uncategorized';
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(word);
-      return acc;
-    }, {});
-  }, [filteredWords]);
+  const handleCategoryChange = (value: string) => {
+    setSelectedCategory(value);
+  };
 
   if (!dictionary) {
     return (
@@ -90,35 +111,62 @@ const DictionaryDetailPage: React.FC = () => {
         <DictionaryInfo dictionary={dictionary} onExport={handleExportDictionary} />
         
         <div className="ios-card p-4">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={handleSearch}
-            placeholder="Поиск слов..."
-            className="ios-input mb-4"
-          />
-          
-          <div className="text-sm mb-2">
-            {filteredWords.length} из {dictionary.words.length} слов
-          </div>
-          
-          <div className={`${!isMobile && Object.keys(wordsByCategory).length > 1 ? 'grid grid-cols-2 gap-4' : ''}`}>
-            {Object.entries(wordsByCategory).map(([category, words]) => (
-              <div key={category} className="mb-4">
-                <div className="ios-section-header">{category}</div>
-                <div className="ios-card overflow-hidden">
-                  {words.map((word, index) => (
-                    <div key={index} className="ios-list-item last:border-b-0">
-                      <div className="font-medium">{word.russian}</div>
-                      <div className="text-ios-primary">{word.dolgan}</div>
-                    </div>
+          <div className="flex flex-col md:flex-row gap-4 mb-4">
+            <div className="flex-1">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={handleSearch}
+                placeholder="Поиск слов..."
+                className="ios-input w-full"
+              />
+            </div>
+            <div className="w-full md:w-64">
+              <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Выберите категорию" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Все категории</SelectItem>
+                  {categories.map(category => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
                   ))}
-                </div>
-              </div>
-            ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           
-          {filteredWords.length === 0 && (
+          <div className="text-sm mb-4">
+            {filteredWords.length} {filteredWords.length === 1 ? 'слово' : 
+             (filteredWords.length > 1 && filteredWords.length < 5) ? 'слова' : 'слов'} 
+            {selectedCategory !== 'all' && ` в категории "${selectedCategory}"`}
+            {searchTerm && ` по запросу "${searchTerm}"`}
+          </div>
+          
+          {filteredWords.length > 0 ? (
+            <div className="overflow-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Слово (русский)</TableHead>
+                    <TableHead>Перевод (долганский)</TableHead>
+                    {selectedCategory === 'all' && <TableHead>Категория</TableHead>}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredWords.map((word, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{word.russian}</TableCell>
+                      <TableCell className="text-ios-primary">{word.dolgan}</TableCell>
+                      {selectedCategory === 'all' && <TableCell>{word.category || '-'}</TableCell>}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ) : (
             <div className="text-center text-ios-text-secondary p-4">
               Слова не найдены
             </div>

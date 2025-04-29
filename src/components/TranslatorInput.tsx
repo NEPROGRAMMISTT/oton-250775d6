@@ -41,144 +41,168 @@ const TranslatorInput: React.FC<TranslatorInputProps> = ({
   };
 
   const translateText = (text: string) => {
-    // Check if we have any phrases to translate first
-    let processedText = text;
     const results: DictionaryWord[] = [];
+    let processedText = text;
     
-    // Sort phrases by length (longest first) to match the longest phrases first
-    const phrases = Object.keys(dolganDictionary).sort((a, b) => b.length - a.length);
+    // Function to normalize Russian text (handle 'ё' and case)
+    const normalizeRussian = (text: string): string => {
+      return text.toLowerCase().replace(/ё/g, 'е');
+    };
     
-    // First, try to match phrases from dolgan_language.json
-    for (const phrase of phrases) {
-      const phraseRegex = new RegExp(`\\b${phrase}\\b`, 'gi');
-      const matches = [...processedText.matchAll(phraseRegex)];
+    // Create word dictionary with normalized keys for faster lookups
+    const wordDictionary = new Map<string, DictionaryWord>();
+    dictionary.words.forEach(word => {
+      wordDictionary.set(normalizeRussian(word.russian), word);
+    });
+    
+    // First: split into tokens (words, punctuation, spaces)
+    const tokens: string[] = processedText.match(/([а-яА-ЯёЁ]+)|([^а-яА-ЯёЁ\s]+|\s+)/g) || [];
+    const resultTokens: DictionaryWord[] = [];
+    
+    let i = 0;
+    while (i < tokens.length) {
+      // Skip non-Russian tokens (punctuation, spaces)
+      if (!/[а-яА-ЯёЁ]/.test(tokens[i])) {
+        resultTokens.push({
+          category: "formatting",
+          russian: tokens[i],
+          dolgan: tokens[i]
+        });
+        i++;
+        continue;
+      }
+
+      // Try to find multi-word phrases by combining consecutive Russian tokens
+      let maxWordsToCheck = 5; // Maximum phrase length to check
+      let found = false;
       
-      if (matches.length > 0) {
-        let lastIndex = 0;
-        let newText = '';
+      for (let phraseLength = maxWordsToCheck; phraseLength > 0; phraseLength--) {
+        if (i + phraseLength * 2 - 1 > tokens.length) continue; // Not enough tokens left
         
-        for (const match of matches) {
-          const matchIndex = match.index as number;
+        // Collect the phrase (words + spaces)
+        const phraseTokens: string[] = [];
+        let isValidPhrase = true;
+        
+        for (let j = 0; j < phraseLength; j++) {
+          const wordIndex = i + j * 2; // Skip spaces
+          const spaceIndex = wordIndex + 1;
           
-          // Add text before the match
-          if (matchIndex > lastIndex) {
-            const beforeText = processedText.substring(lastIndex, matchIndex);
-            newText += beforeText;
+          // Check if this is a word (not punctuation/space)
+          if (wordIndex >= tokens.length || !/[а-яА-ЯёЁ]/.test(tokens[wordIndex])) {
+            isValidPhrase = false;
+            break;
           }
           
-          // Add the phrase to results
-          const dolganPhrase = dolganDictionary[phrase.toLowerCase()];
-          results.push({
-            category: "phrase",
-            russian: match[0],
-            dolgan: match[0][0].toUpperCase() === match[0][0] 
-              ? dolganPhrase.charAt(0).toUpperCase() + dolganPhrase.slice(1)
-              : dolganPhrase
-          });
+          phraseTokens.push(tokens[wordIndex]);
           
-          // Replace the phrase with a placeholder
-          const placeholder = `__PHRASE_${results.length - 1}__`;
-          newText += placeholder;
-          
-          lastIndex = matchIndex + match[0].length;
+          // Add space if not the last word and there is a space
+          if (j < phraseLength - 1) {
+            if (spaceIndex >= tokens.length || !/\s/.test(tokens[spaceIndex])) {
+              isValidPhrase = false;
+              break;
+            }
+            phraseTokens.push(tokens[spaceIndex]);
+          }
         }
         
-        // Add remaining text
-        if (lastIndex < processedText.length) {
-          newText += processedText.substring(lastIndex);
-        }
+        if (!isValidPhrase) continue;
         
-        processedText = newText;
-      }
-    }
-    
-    // Now process remaining text for single words and formatting
-    const regex = /(__PHRASE_\d+__)|([а-яА-ЯёЁ]+(?:\s+[а-яА-ЯёЁ]+)*)|([^а-яА-ЯёЁ\s]+|\s+)/g;
-    const tokens = processedText.match(regex) || [];
-    
-    const finalResults: DictionaryWord[] = [];
-    
-    tokens.forEach(token => {
-      // Handle phrase placeholders
-      if (token.startsWith('__PHRASE_')) {
-        const phraseIndex = parseInt(token.match(/\d+/)![0]);
-        finalResults.push(results[phraseIndex]);
-      }
-      // If it contains Russian characters, translate individual words
-      else if (/[а-яА-ЯёЁ]/.test(token)) {
-        // Try to find exact phrase first
-        const normalizedToken = token.toLowerCase().replace(/ё/g, 'е').trim();
-        let found = dictionary.words.find(
-          dictWord => dictWord.russian.toLowerCase().replace(/ё/g, 'е') === normalizedToken
-        );
+        const phrase = phraseTokens.join('');
+        const normalizedPhrase = normalizeRussian(phrase);
         
-        if (!found && token.includes(' ')) {
-          // If phrase not found, split into individual words
-          const words = token.split(/\s+/);
-          const translatedWords: DictionaryWord[] = [];
+        // Check if the exact phrase exists in our dictionary
+        if (wordDictionary.has(normalizedPhrase)) {
+          const foundWord = wordDictionary.get(normalizedPhrase)!;
+          const resultWord = { ...foundWord };
           
-          words.forEach(word => {
-            const normalizedWord = word.toLowerCase().replace(/ё/g, 'е');
-            const foundWord = dictionary.words.find(
-              dictWord => dictWord.russian.toLowerCase().replace(/ё/g, 'е') === normalizedWord
-            );
-            
-            if (foundWord) {
-              const resultWord = { ...foundWord };
-              if (word[0] === word[0].toUpperCase()) {
-                resultWord.dolgan = resultWord.dolgan.charAt(0).toUpperCase() + resultWord.dolgan.slice(1);
+          // Preserve capitalization
+          if (phrase[0] === phrase[0].toUpperCase()) {
+            resultWord.dolgan = resultWord.dolgan.charAt(0).toUpperCase() + resultWord.dolgan.slice(1);
+          }
+          
+          resultTokens.push(resultWord);
+          
+          // Skip all tokens that were part of this phrase
+          i += phraseTokens.length;
+          found = true;
+          break;
+        }
+      }
+      
+      // If no phrase found, translate single word
+      if (!found) {
+        const word = tokens[i];
+        const normalizedWord = normalizeRussian(word);
+        
+        if (wordDictionary.has(normalizedWord)) {
+          const foundWord = wordDictionary.get(normalizedWord)!;
+          const resultWord = { ...foundWord };
+          
+          // Preserve capitalization
+          if (word[0] === word[0].toUpperCase()) {
+            resultWord.dolgan = resultWord.dolgan.charAt(0).toUpperCase() + resultWord.dolgan.slice(1);
+          }
+          
+          resultTokens.push(resultWord);
+        } else {
+          // Handle numbers conversion
+          if (/^\d+$/.test(word)) {
+            const numberWord = convertNumberToWord(word);
+            if (numberWord) {
+              const translatedNumberWord = wordDictionary.get(normalizeRussian(numberWord));
+              if (translatedNumberWord) {
+                resultTokens.push({
+                  category: "number",
+                  russian: word + ` (${numberWord})`,
+                  dolgan: translatedNumberWord.dolgan
+                });
+              } else {
+                resultTokens.push({
+                  category: "number",
+                  russian: word + ` (${numberWord})`,
+                  dolgan: word
+                });
               }
-              translatedWords.push(resultWord);
             } else {
-              translatedWords.push({
+              resultTokens.push({
                 category: "not-found",
                 russian: word,
                 dolgan: word
               });
             }
-          });
-          
-          // Add space between translated words
-          translatedWords.forEach((word, index) => {
-            finalResults.push(word);
-            if (index < translatedWords.length - 1) {
-              finalResults.push({
-                category: "formatting",
-                russian: " ",
-                dolgan: " "
-              });
-            }
-          });
-        } else {
-          // Single word or found phrase
-          if (found) {
-            // Preserve capitalization
-            if (token[0] === token[0].toUpperCase()) {
-              found = {
-                ...found,
-                dolgan: found.dolgan.charAt(0).toUpperCase() + found.dolgan.slice(1)
-              };
-            }
-            finalResults.push(found);
           } else {
-            finalResults.push({
+            // Word not found in dictionary
+            resultTokens.push({
               category: "not-found",
-              russian: token,
-              dolgan: token
+              russian: word,
+              dolgan: word
             });
           }
         }
-      } else {
-        // Non-Russian characters (punctuation, spaces)
-        finalResults.push({
-          category: "formatting",
-          russian: token,
-          dolgan: token
-        });
+        i++;
       }
-    });
+    }
     
-    onTranslate(text, finalResults);
+    onTranslate(text, resultTokens);
+  };
+
+  // Функция для преобразования цифры в слово на русском
+  const convertNumberToWord = (numberStr: string): string | null => {
+    const num = parseInt(numberStr, 10);
+    
+    // Для простоты обрабатываем только числа до 20
+    if (isNaN(num) || num < 0 || num > 20) {
+      return null;
+    }
+    
+    const numberWords = [
+      'ноль', 'один', 'два', 'три', 'четыре', 'пять', 
+      'шесть', 'семь', 'восемь', 'девять', 'десять',
+      'одиннадцать', 'двенадцать', 'тринадцать', 'четырнадцать', 'пятнадцать',
+      'шестнадцать', 'семнадцать', 'восемнадцать', 'девятнадцать', 'двадцать'
+    ];
+    
+    return numberWords[num];
   };
 
   return (
