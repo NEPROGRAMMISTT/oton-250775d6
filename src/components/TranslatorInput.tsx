@@ -18,9 +18,11 @@ const TranslatorInput: React.FC<TranslatorInputProps> = ({
   useEffect(() => {
     const loadDolganDictionary = async () => {
       try {
+        // Изменён путь для корректной работы с ServiceWorker
         const response = await fetch('/src/data/dolgan_language.json');
         const data = await response.json();
         setDolganDictionary(data);
+        console.log('Успешно загружен словарь долганского языка');
       } catch (error) {
         console.error('Error loading dolgan dictionary:', error);
       }
