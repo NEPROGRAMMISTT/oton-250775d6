@@ -1,6 +1,4 @@
-
 import React from 'react';
-import StatusBar from '../components/StatusBar';
 import NavigationBar from '../components/NavigationBar';
 import TranslatorInput from '../components/TranslatorInput';
 import TranslationResults from '../components/TranslationResults';
@@ -39,7 +37,6 @@ const TranslatorPage: React.FC = () => {
 
   return (
     <div className="ios-container pb-16 max-w-full md:max-w-4xl lg:max-w-6xl mx-auto">
-      <StatusBar />
       <NavigationBar 
         title="Переводчик" 
         rightElement={

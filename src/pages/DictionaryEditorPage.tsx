@@ -1,7 +1,5 @@
-
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import StatusBar from '../components/StatusBar';
 import NavigationBar from '../components/NavigationBar';
 import { Dictionary, DictionaryWord } from '../types/dictionary';
 import { dictionaryService } from '../services/dictionaryService';
@@ -11,6 +9,7 @@ import { Textarea } from '../components/ui/textarea';
 import { toast } from '../components/ui/use-toast';
 import TabBar from '../components/TabBar';
 import { useIsMobile } from '../hooks/use-mobile';
+import StatusBar from '../components/StatusBar';
 
 const DictionaryEditorPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
