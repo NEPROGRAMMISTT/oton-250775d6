@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import StatusBar from '../components/StatusBar';
 import NavigationBar from '../components/NavigationBar';
 import DictionaryInfo from '../components/DictionaryInfo';
 import { Dictionary, DictionaryWord } from '../types/dictionary';
@@ -69,7 +68,6 @@ const DictionaryDetailPage: React.FC = () => {
   if (!dictionary) {
     return (
       <div className="ios-container">
-        <StatusBar />
         <NavigationBar title="Словарь" showBackButton />
         <div className="p-4 text-center">Загрузка...</div>
       </div>
@@ -78,7 +76,6 @@ const DictionaryDetailPage: React.FC = () => {
 
   return (
     <div className="ios-container pb-6 max-w-full md:max-w-4xl lg:max-w-6xl mx-auto">
-      <StatusBar />
       <NavigationBar 
         title="Словарь" 
         showBackButton
