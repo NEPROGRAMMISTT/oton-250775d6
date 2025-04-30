@@ -24,15 +24,15 @@ export default {
 			},
 			colors: {
 				ios: {
-					background: '#F2F2F7',
+					background: '#F0F5FF',  // Light blue background
 					card: '#FFFFFF',
-					primary: '#007AFF',
-					secondary: '#5AC8FA',
+					primary: '#1E40AF',    // Deep blue as primary color
+					secondary: '#3B82F6',   // Medium blue as secondary
 					gray: '#8E8E93',
 					lightgray: '#D1D1D6',
 					separator: '#C6C6C8',
-					text: '#000000',
-					'text-secondary': '#6C6C70',
+					text: '#1E293B',        // Dark blue text
+					'text-secondary': '#64748B', // Slate blue secondary text
 				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
