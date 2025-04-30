@@ -1,3 +1,4 @@
+
 import React from 'react';
 import NavigationBar from '../components/NavigationBar';
 import TranslatorInput from '../components/TranslatorInput';
@@ -6,6 +7,10 @@ import TabBar from '../components/TabBar';
 import { Dictionary, DictionaryWord } from '../types/dictionary';
 import { dictionaryService } from '../services/dictionaryService';
 import { useIsMobile } from '../hooks/use-mobile';
+import { Button } from '@/components/ui/button';
+import { ArrowDownUp } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 const TranslatorPage: React.FC = () => {
   const [dictionaries, setDictionaries] = React.useState<Dictionary[]>([]);
@@ -16,11 +21,15 @@ const TranslatorPage: React.FC = () => {
 
   React.useEffect(() => {
     // Load dictionaries on component mount
-    const loadedDictionaries = dictionaryService.getDictionaries();
-    setDictionaries(loadedDictionaries);
-    if (loadedDictionaries.length > 0) {
-      setActiveDictionary(loadedDictionaries[0]);
-    }
+    const loadDictionaries = async () => {
+      const loadedDictionaries = dictionaryService.getDictionaries();
+      setDictionaries(loadedDictionaries);
+      if (loadedDictionaries.length > 0) {
+        setActiveDictionary(loadedDictionaries[0]);
+      }
+    };
+    
+    loadDictionaries();
   }, []);
 
   const handleDictionaryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -55,32 +64,44 @@ const TranslatorPage: React.FC = () => {
         }
       />
       
-      <div className={`p-4 ${isMobile ? 'space-y-4' : 'grid grid-cols-2 gap-4'}`}>
-        {activeDictionary ? (
-          <>
-            <div className={isMobile ? '' : 'col-span-1'}>
-              <TranslatorInput 
-                dictionary={activeDictionary} 
-                onTranslate={handleTranslate} 
-              />
+      <div className="p-4 space-y-4">
+        {activeDictionary && (
+          <div className="ios-card p-3 flex justify-between items-center">
+            <div className="flex items-center space-x-2">
+              <div className="text-ios-primary font-medium">{activeDictionary.info.from_language}</div>
+              <ArrowDownUp size={16} className="text-ios-text-secondary mx-2" />
+              <div className="text-ios-primary font-medium">{activeDictionary.info.to_language}</div>
             </div>
-            
-            <div className={isMobile ? '' : 'col-span-1'}>
-              <TranslationResults 
-                sourceText={sourceText}
-                results={results}
-                fromLanguage={activeDictionary.info.from_language}
-                toLanguage={activeDictionary.info.to_language}
-              />
-            </div>
-          </>
-        ) : (
-          <div className="ios-card p-4 text-center">
-            <p className="text-ios-text-secondary">
-              Нет доступных словарей. Пожалуйста, добавьте словарь.
-            </p>
           </div>
         )}
+        
+        <div className={`${isMobile ? 'space-y-4' : 'grid grid-cols-2 gap-4'}`}>
+          {activeDictionary ? (
+            <>
+              <div className={isMobile ? '' : 'col-span-1'}>
+                <TranslatorInput 
+                  dictionary={activeDictionary} 
+                  onTranslate={handleTranslate} 
+                />
+              </div>
+              
+              <div className={isMobile ? '' : 'col-span-1'}>
+                <TranslationResults 
+                  sourceText={sourceText}
+                  results={results}
+                  fromLanguage={activeDictionary.info.from_language}
+                  toLanguage={activeDictionary.info.to_language}
+                />
+              </div>
+            </>
+          ) : (
+            <div className="ios-card p-4 text-center">
+              <p className="text-ios-text-secondary">
+                Нет доступных словарей. Пожалуйста, добавьте словарь.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
       
       <TabBar />

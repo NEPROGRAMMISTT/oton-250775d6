@@ -1,4 +1,3 @@
-
 import { Dictionary } from "../types/dictionary";
 import { sampleDictionary } from "../data/sampleDictionary";
 
@@ -18,7 +17,7 @@ export const dictionaryService = {
         }
       }
       
-      // If no dictionaries, initialize with sample and try to load dolgan_language.json
+      // If no dictionaries, initialize with defaults
       return dictionaryService.initializeDefaultDictionaries();
     } catch (error) {
       console.error("Error loading dictionaries:", error);
@@ -27,17 +26,22 @@ export const dictionaryService = {
   },
 
   // Initialize with default dictionaries including any from data folder
-  initializeDefaultDictionaries: (): Dictionary[] => {
+  initializeDefaultDictionaries: async (): Promise<Dictionary[]> => {
     const dictionaries: Dictionary[] = [sampleDictionary];
     
-    // Load dolgan_language.json
     try {
-      const dolganDictionary = dictionaryService.createDolganDictionary();
-      if (dolganDictionary) {
-        dictionaries.push(dolganDictionary);
+      // Fetch the list of available dictionaries from public/data
+      const response = await fetch('/data/');
+      if (!response.ok) {
+        console.error("Failed to fetch dictionary list");
+        throw new Error("Failed to fetch dictionary list");
       }
+      
+      // Load all dictionaries from public/data folder
+      await dictionaryService.loadDictionariesFromPublicData(dictionaries);
+      
     } catch (error) {
-      console.error("Error loading dolgan dictionary:", error);
+      console.error("Error loading dictionaries from public/data:", error);
     }
     
     // Save to local storage
@@ -45,56 +49,82 @@ export const dictionaryService = {
     return dictionaries;
   },
   
-  // Create a structured dictionary from dolgan_language.json
-  createDolganDictionary: (): Dictionary | null => {
+  // Load all dictionaries from public/data folder
+  loadDictionariesFromPublicData: async (dictionaries: Dictionary[]): Promise<void> => {
     try {
-      // For client-side loading, we'll use fetch
-      fetch('/src/data/dolgan_language.json')
-        .then(response => response.json())
-        .then(data => {
-          const words = Object.entries(data).map(([russian, dolgan]) => ({
-            russian,
-            dolgan: dolgan as string,
-            category: 'basic'
-          }));
-          
-          const dolganDictionary: Dictionary = {
-            info: {
-              from_language: "Русский",
-              to_language: "Долганский",
-              author: "Автоматически загружен",
-              description: "Словарь долганского языка",
-              categories: ["basic"]
-            },
-            words
-          };
-          
-          // Add to existing dictionaries
-          const dictionaries = dictionaryService.getDictionaries();
-          // Check if we already have this dictionary
-          const exists = dictionaries.some(dict => 
-            dict.info.from_language === "Русский" && 
-            dict.info.to_language === "Долганский" &&
-            dict.info.author === "Автоматически загружен"
-          );
-          
-          if (!exists) {
-            dictionaries.push(dolganDictionary);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(dictionaries));
-            console.info("Успешно загружен словарь долганского языка");
+      // List of known dictionary files in public/data
+      const knownDictFiles = ['dolgan_language.json', 'binary_language.json'];
+      
+      for (const fileName of knownDictFiles) {
+        try {
+          const response = await fetch(`/data/${fileName}`);
+          if (!response.ok) {
+            console.warn(`Dictionary file ${fileName} not found or couldn't be loaded`);
+            continue;
           }
           
-          return dolganDictionary;
-        })
-        .catch(error => {
-          console.error("Error fetching dolgan dictionary:", error);
-          return null;
-        });
-      
-      return null; // Initial return is null since fetch is asynchronous
+          const data = await response.json();
+          
+          // Check if this is a raw dictionary format (key-value pairs)
+          if (typeof data === 'object' && !Array.isArray(data) && data !== null && !('info' in data)) {
+            // Convert raw format to Dictionary structure
+            const languageName = fileName.split('_')[0];
+            const capitalizedName = languageName.charAt(0).toUpperCase() + languageName.slice(1);
+            
+            const words = Object.entries(data).map(([russian, translation]) => ({
+              russian,
+              dolgan: translation as string,
+              category: 'basic'
+            }));
+            
+            const newDictionary: Dictionary = {
+              info: {
+                from_language: "Русский",
+                to_language: capitalizedName,
+                author: "Автоматически загружен",
+                categories: ["basic"],
+                languages: ["Русский", capitalizedName],
+                parameters: "",
+                social_media: {}
+              },
+              words
+            };
+            
+            // Check if we already have this dictionary
+            const exists = dictionaries.some(dict => 
+              dict.info.from_language === newDictionary.info.from_language && 
+              dict.info.to_language === newDictionary.info.to_language
+            );
+            
+            if (!exists) {
+              dictionaries.push(newDictionary);
+              console.info(`Successfully loaded ${capitalizedName} dictionary with ${words.length} words`);
+            }
+          } 
+          // If it's already a Dictionary structure
+          else if (typeof data === 'object' && 'info' in data && 'words' in data) {
+            const newDictionary = data as Dictionary;
+            
+            // Check if we already have this dictionary
+            const exists = dictionaries.some(dict => 
+              dict.info.from_language === newDictionary.info.from_language && 
+              dict.info.to_language === newDictionary.info.to_language &&
+              dict.info.author === newDictionary.info.author
+            );
+            
+            if (!exists) {
+              dictionaries.push(newDictionary);
+              console.info(`Successfully loaded ${newDictionary.info.to_language} dictionary with ${newDictionary.words.length} words`);
+            }
+          } else {
+            console.warn(`Dictionary file ${fileName} has unknown format`);
+          }
+        } catch (error) {
+          console.error(`Error processing dictionary file ${fileName}:`, error);
+        }
+      }
     } catch (error) {
-      console.error("Error creating dolgan dictionary:", error);
-      return null;
+      console.error("Error loading dictionaries from public/data:", error);
     }
   },
 
