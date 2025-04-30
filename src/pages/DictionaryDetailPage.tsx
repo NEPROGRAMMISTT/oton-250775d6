@@ -14,7 +14,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink } from "@/components/ui/pagination";
 
 const DictionaryDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,8 +22,6 @@ const DictionaryDetailPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
   const [filteredWords, setFilteredWords] = React.useState<DictionaryWord[]>([]);
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const wordsPerPage = 50;
   const isMobile = useIsMobile();
 
   // Получаем уникальные категории из словаря
@@ -73,7 +70,6 @@ const DictionaryDetailPage: React.FC = () => {
       }
       
       setFilteredWords(filtered);
-      setCurrentPage(1);
     } else {
       // Если нет поиска и категория all, не показываем все слова
       setFilteredWords([]);
@@ -92,23 +88,6 @@ const DictionaryDetailPage: React.FC = () => {
 
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
-  };
-
-  // Paginated words for current page
-  const paginatedWords = React.useMemo(() => {
-    const startIndex = (currentPage - 1) * wordsPerPage;
-    const endIndex = startIndex + wordsPerPage;
-    return filteredWords.slice(startIndex, endIndex);
-  }, [filteredWords, currentPage, wordsPerPage]);
-
-  // Total pages calculation
-  const totalPages = React.useMemo(() => {
-    return Math.ceil(filteredWords.length / wordsPerPage);
-  }, [filteredWords, wordsPerPage]);
-
-  // Page navigation
-  const goToPage = (page: number) => {
-    setCurrentPage(page);
   };
 
   if (!dictionary) {
@@ -170,67 +149,29 @@ const DictionaryDetailPage: React.FC = () => {
                  (filteredWords.length > 1 && filteredWords.length < 5) ? 'слова' : 'слов'} 
                 {selectedCategory !== 'all' && ` в категории "${selectedCategory}"`}
                 {searchTerm && ` по запросу "${searchTerm}"`}
-                {filteredWords.length > wordsPerPage && ` (отображается ${paginatedWords.length} из ${filteredWords.length})`}
               </div>
               
               {filteredWords.length > 0 ? (
-                <>
-                  <div className="overflow-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Слово (русский)</TableHead>
-                          <TableHead>Перевод (долганский)</TableHead>
-                          {selectedCategory === 'all' && <TableHead>Категория</TableHead>}
+                <div className="overflow-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Слово (русский)</TableHead>
+                        <TableHead>Перевод (долганский)</TableHead>
+                        {selectedCategory === 'all' && <TableHead>Категория</TableHead>}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredWords.map((word, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="font-medium">{word.russian}</TableCell>
+                          <TableCell className="text-ios-primary">{word.dolgan}</TableCell>
+                          {selectedCategory === 'all' && <TableCell>{word.category || '-'}</TableCell>}
                         </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {paginatedWords.map((word, index) => (
-                          <TableRow key={index}>
-                            <TableCell className="font-medium">{word.russian}</TableCell>
-                            <TableCell className="text-ios-primary">{word.dolgan}</TableCell>
-                            {selectedCategory === 'all' && <TableCell>{word.category || '-'}</TableCell>}
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-
-                  {totalPages > 1 && (
-                    <Pagination className="mt-4">
-                      <PaginationContent>
-                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                          // Display first page, last page, current page and surrounding pages
-                          let pageToShow;
-                          if (totalPages <= 5) {
-                            // Show all pages if 5 or fewer
-                            pageToShow = i + 1;
-                          } else if (currentPage <= 3) {
-                            // Near the start
-                            pageToShow = i + 1;
-                          } else if (currentPage >= totalPages - 2) {
-                            // Near the end
-                            pageToShow = totalPages - 4 + i;
-                          } else {
-                            // In the middle
-                            pageToShow = currentPage - 2 + i;
-                          }
-                          
-                          return (
-                            <PaginationItem key={i}>
-                              <PaginationLink
-                                isActive={currentPage === pageToShow}
-                                onClick={() => goToPage(pageToShow)}
-                              >
-                                {pageToShow}
-                              </PaginationLink>
-                            </PaginationItem>
-                          );
-                        })}
-                      </PaginationContent>
-                    </Pagination>
-                  )}
-                </>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               ) : (
                 <div className="text-center text-ios-text-secondary p-4">
                   Слова не найдены

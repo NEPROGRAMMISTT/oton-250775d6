@@ -21,13 +21,13 @@ const DictionaryList: React.FC<DictionaryListProps> = ({
       ) : (
         <ul>
           {dictionaries.map((dictionary, index) => (
-            <li key={index} className="ios-list-item last:border-b-0 hover:bg-blue-50 transition-colors duration-150">
+            <li key={index} className="ios-list-item last:border-b-0">
               <Link 
                 to={`/dictionary/${index}`}
                 className="flex-1 flex items-center"
               >
                 <div>
-                  <div className="font-medium text-ios-primary">
+                  <div className="font-medium">
                     {dictionary.info.from_language} → {dictionary.info.to_language}
                   </div>
                   <div className="text-sm text-ios-text-secondary">
@@ -37,7 +37,7 @@ const DictionaryList: React.FC<DictionaryListProps> = ({
               </Link>
               <button 
                 onClick={() => onDeleteDictionary(index)}
-                className="text-red-500 ml-4 hover:text-red-600 px-3 py-1 rounded transition-colors"
+                className="text-red-500 ml-4"
               >
                 Удалить
               </button>
