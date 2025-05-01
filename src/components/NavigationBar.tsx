@@ -34,7 +34,8 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
             Назад
           </button>
         ) : (
-          <div></div> {/* Empty div to maintain flex spacing */}
+          // Empty div to maintain flex spacing
+          <div></div>
         )}
         <h1 className="text-lg font-semibold">
           {title}
