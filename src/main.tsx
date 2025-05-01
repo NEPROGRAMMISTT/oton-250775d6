@@ -11,7 +11,7 @@ if ('serviceWorker' in navigator) {
       .then(registration => {
         console.log('ServiceWorker registered successfully:', registration.scope);
         
-        // Initialize dictionaries on app start (async)
+        // Initialize dictionaries on app start
         dictionaryService.initializeDefaultDictionaries()
           .then(() => {
             console.info('Dictionaries initialized successfully');
