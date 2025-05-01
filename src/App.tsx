@@ -11,6 +11,7 @@ import DictionariesPage from "./pages/DictionariesPage";
 import DictionaryDetailPage from "./pages/DictionaryDetailPage";
 import DictionaryEditorPage from "./pages/DictionaryEditorPage";
 import SettingsPage from "./pages/SettingsPage";
+import TranslatorPage from "./pages/TranslatorPage";
 
 const queryClient = new QueryClient();
 
@@ -22,7 +23,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<TranslatorPage />} />
             <Route path="/dictionaries" element={<DictionariesPage />} />
             <Route path="/dictionary/:id" element={<DictionaryDetailPage />} />
             <Route path="/dictionary/edit/:id" element={<DictionaryEditorPage />} />

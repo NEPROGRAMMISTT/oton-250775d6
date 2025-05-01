@@ -16,10 +16,10 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className="ios-header h-14 w-full left-0 right-0">
+    <div className="ios-header h-14 w-full left-0 right-0 fixed top-0 bg-background z-10">
       <div className="max-w-full md:max-w-4xl lg:max-w-6xl mx-auto flex items-center justify-between h-full px-4">
         {/* Left side - Back button or empty spacer */}
-        <div className="flex-1 flex justify-start">
+        <div className="w-1/3 flex justify-start">
           {showBackButton ? (
             <button 
               onClick={() => navigate(-1)}
@@ -41,12 +41,12 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
         </div>
         
         {/* Center - Title */}
-        <h1 className="text-lg font-semibold flex-0">
+        <h1 className="text-lg font-semibold w-1/3 text-center">
           {title}
         </h1>
         
         {/* Right side - Optional elements or empty spacer */}
-        <div className="flex-1 flex justify-end">
+        <div className="w-1/3 flex justify-end">
           {rightElement || <div></div>}
         </div>
       </div>

@@ -42,7 +42,7 @@ const TranslatorPage: React.FC = () => {
   };
 
   return (
-    <div className="ios-container pb-16 max-w-full md:max-w-4xl lg:max-w-6xl mx-auto">
+    <div className="ios-container pb-16 pt-14 max-w-full md:max-w-4xl lg:max-w-6xl mx-auto">
       <NavigationBar title="Переводчик" />
       
       <div className="p-4 space-y-4">
