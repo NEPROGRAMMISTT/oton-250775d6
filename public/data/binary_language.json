@@ -1,0 +1,436 @@
+{
+  "info": {
+    "author": "PROSTO VAL",
+    "languages": [
+      "russian",
+      "russian"
+    ],
+    "from_language": "Русский",
+    "to_language": "Бинарный",
+    "parameters": "no_probel, no_library",
+    "categories": "none",
+    "social_media": {}
+  },
+  "words": [
+    {
+      "category": "alphabet",
+      "russian": "А",
+      "dolgan": "01000001"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Б",
+      "dolgan": "01000010"
+    },
+    {
+      "category": "alphabet",
+      "russian": "В",
+      "dolgan": "01000011"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Г",
+      "dolgan": "01000100"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Д",
+      "dolgan": "01000101"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Е",
+      "dolgan": "01000110"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Ё",
+      "dolgan": "01000111"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Ж",
+      "dolgan": "01001000"
+    },
+    {
+      "category": "alphabet",
+      "russian": "З",
+      "dolgan": "01001001"
+    },
+    {
+      "category": "alphabet",
+      "russian": "И",
+      "dolgan": "01001010"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Й",
+      "dolgan": "01001011"
+    },
+    {
+      "category": "alphabet",
+      "russian": "К",
+      "dolgan": "01001100"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Л",
+      "dolgan": "01001101"
+    },
+    {
+      "category": "alphabet",
+      "russian": "М",
+      "dolgan": "01001110"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Н",
+      "dolgan": "01001111"
+    },
+    {
+      "category": "alphabet",
+      "russian": "О",
+      "dolgan": "01010000"
+    },
+    {
+      "category": "alphabet",
+      "russian": "П",
+      "dolgan": "01010001"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Р",
+      "dolgan": "01010010"
+    },
+    {
+      "category": "alphabet",
+      "russian": "С",
+      "dolgan": "01010011"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Т",
+      "dolgan": "01010100"
+    },
+    {
+      "category": "alphabet",
+      "russian": "У",
+      "dolgan": "01010101"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Ф",
+      "dolgan": "01010110"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Х",
+      "dolgan": "01010111"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Ц",
+      "dolgan": "01011000"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Ч",
+      "dolgan": "01011001"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Ш",
+      "dolgan": "01011010"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Щ",
+      "dolgan": "01011011"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Ъ",
+      "dolgan": "01011100"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Ы",
+      "dolgan": "01011101"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Ь",
+      "dolgan": "01011110"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Э",
+      "dolgan": "01011111"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Ю",
+      "dolgan": "01100000"
+    },
+    {
+      "category": "alphabet",
+      "russian": "Я",
+      "dolgan": "01100001"
+    },
+    {
+      "category": "alphabet",
+      "russian": "а",
+      "dolgan": "01100010"
+    },
+    {
+      "category": "alphabet",
+      "russian": "б",
+      "dolgan": "01100011"
+    },
+    {
+      "category": "alphabet",
+      "russian": "в",
+      "dolgan": "01100100"
+    },
+    {
+      "category": "alphabet",
+      "russian": "г",
+      "dolgan": "01100101"
+    },
+    {
+      "category": "alphabet",
+      "russian": "д",
+      "dolgan": "01100110"
+    },
+    {
+      "category": "alphabet",
+      "russian": "е",
+      "dolgan": "01100111"
+    },
+    {
+      "category": "alphabet",
+      "russian": "ё",
+      "dolgan": "01101000"
+    },
+    {
+      "category": "alphabet",
+      "russian": "ж",
+      "dolgan": "01101001"
+    },
+    {
+      "category": "alphabet",
+      "russian": "з",
+      "dolgan": "01101010"
+    },
+    {
+      "category": "alphabet",
+      "russian": "и",
+      "dolgan": "01101011"
+    },
+    {
+      "category": "alphabet",
+      "russian": "й",
+      "dolgan": "01101100"
+    },
+    {
+      "category": "alphabet",
+      "russian": "к",
+      "dolgan": "01101101"
+    },
+    {
+      "category": "alphabet",
+      "russian": "л",
+      "dolgan": "01101110"
+    },
+    {
+      "category": "alphabet",
+      "russian": "м",
+      "dolgan": "01101111"
+    },
+    {
+      "category": "alphabet",
+      "russian": "н",
+      "dolgan": "01110000"
+    },
+    {
+      "category": "alphabet",
+      "russian": "о",
+      "dolgan": "01110001"
+    },
+    {
+      "category": "alphabet",
+      "russian": "п",
+      "dolgan": "01110010"
+    },
+    {
+      "category": "alphabet",
+      "russian": "р",
+      "dolgan": "01110011"
+    },
+    {
+      "category": "alphabet",
+      "russian": "с",
+      "dolgan": "01110100"
+    },
+    {
+      "category": "alphabet",
+      "russian": "т",
+      "dolgan": "01110101"
+    },
+    {
+      "category": "alphabet",
+      "russian": "у",
+      "dolgan": "01110110"
+    },
+    {
+      "category": "alphabet",
+      "russian": "ф",
+      "dolgan": "01110111"
+    },
+    {
+      "category": "alphabet",
+      "russian": "х",
+      "dolgan": "01111000"
+    },
+    {
+      "category": "alphabet",
+      "russian": "ц",
+      "dolgan": "01111001"
+    },
+    {
+      "category": "alphabet",
+      "russian": "ч",
+      "dolgan": "01111010"
+    },
+    {
+      "category": "alphabet",
+      "russian": "ш",
+      "dolgan": "01111011"
+    },
+    {
+      "category": "alphabet",
+      "russian": "щ",
+      "dolgan": "01111100"
+    },
+    {
+      "category": "alphabet",
+      "russian": "ъ",
+      "dolgan": "01111101"
+    },
+    {
+      "category": "alphabet",
+      "russian": "ы",
+      "dolgan": "01111110"
+    },
+    {
+      "category": "alphabet",
+      "russian": "ь",
+      "dolgan": "01111111"
+    },
+    {
+      "category": "alphabet",
+      "russian": "э",
+      "dolgan": "10000000"
+    },
+    {
+      "category": "alphabet",
+      "russian": "ю",
+      "dolgan": "10000001"
+    },
+    {
+      "category": "alphabet",
+      "russian": "я",
+      "dolgan": "10000010"
+    },
+    {
+      "category": "numerals",
+      "russian": "0",
+      "dolgan": "00110000"
+    },
+    {
+      "category": "numerals",
+      "russian": "1",
+      "dolgan": "00110001"
+    },
+    {
+      "category": "numerals",
+      "russian": "2",
+      "dolgan": "00110010"
+    },
+    {
+      "category": "numerals",
+      "russian": "3",
+      "dolgan": "00110011"
+    },
+    {
+      "category": "numerals",
+      "russian": "4",
+      "dolgan": "00110100"
+    },
+    {
+      "category": "numerals",
+      "russian": "5",
+      "dolgan": "00110101"
+    },
+    {
+      "category": "numerals",
+      "russian": "6",
+      "dolgan": "00110110"
+    },
+    {
+      "category": "numerals",
+      "russian": "7",
+      "dolgan": "00110111"
+    },
+    {
+      "category": "numerals",
+      "russian": "8",
+      "dolgan": "00111000"
+    },
+    {
+      "category": "numerals",
+      "russian": "9",
+      "dolgan": "00111001"
+    },
+    {
+      "category": "punctuation",
+      "russian": " ",
+      "dolgan": "00100000"
+    },
+    {
+      "category": "punctuation",
+      "russian": "!",
+      "dolgan": "00100001"
+    },
+    {
+      "category": "punctuation",
+      "russian": ",",
+      "dolgan": "00101100"
+    },
+    {
+      "category": "punctuation",
+      "russian": ".",
+      "dolgan": "00101110"
+    },
+    {
+      "category": "punctuation",
+      "russian": "?",
+      "dolgan": "00111111"
+    },
+    {
+      "category": "punctuation",
+      "russian": ":",
+      "dolgan": "00111010"
+    },
+    {
+      "category": "punctuation",
+      "russian": ";",
+      "dolgan": "00111011"
+    },
+    {
+      "category": "punctuation",
+      "russian": "-",
+      "dolgan": "00101101"
+    }
+  ]
+}

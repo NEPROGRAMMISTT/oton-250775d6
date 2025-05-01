@@ -24,15 +24,36 @@ export default {
 			},
 			colors: {
 				ios: {
-					background: '#F2F2F7',
-					card: '#FFFFFF',
-					primary: '#007AFF',
-					secondary: '#5AC8FA',
+					background: {
+						DEFAULT: '#F0F5FF',  // Light blue background
+						dark: '#0A101F'      // Dark mode background
+					},
+					card: {
+						DEFAULT: '#FFFFFF',   // Light mode card
+						dark: '#1A2035'       // Dark mode card
+					},
+					primary: {
+						DEFAULT: '#1E40AF',   // Deep blue as primary color
+						dark: '#3B82F6'       // Lighter blue for dark mode
+					},
+					secondary: {
+						DEFAULT: '#3B82F6',   // Medium blue as secondary
+						dark: '#60A5FA'       // Lighter secondary for dark mode
+					},
 					gray: '#8E8E93',
 					lightgray: '#D1D1D6',
-					separator: '#C6C6C8',
-					text: '#000000',
-					'text-secondary': '#6C6C70',
+					separator: {
+						DEFAULT: '#C6C6C8',   // Light mode separator
+						dark: '#2A2F45'       // Dark mode separator
+					},
+					text: {
+						DEFAULT: '#1E293B',   // Dark blue text for light mode
+						dark: '#E5E7EB'       // Light text for dark mode
+					},
+					'text-secondary': {
+						DEFAULT: '#64748B',   // Slate blue secondary text for light mode
+						dark: '#94A3B8'       // Lighter secondary text for dark mode
+					},
 				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

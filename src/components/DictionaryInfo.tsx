@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Dictionary } from '../types/dictionary';
+import { Button } from "@/components/ui/button";
 
 interface DictionaryInfoProps {
   dictionary: Dictionary;
@@ -9,8 +10,12 @@ interface DictionaryInfoProps {
 
 const DictionaryInfo: React.FC<DictionaryInfoProps> = ({ dictionary, onExport }) => {
   const { info } = dictionary;
-  const categories = info.categories.split(',').filter(Boolean);
-
+  
+  // Handle categories properly whether it's a string or an array
+  const categories = Array.isArray(info.categories) 
+    ? info.categories 
+    : info.categories.split(',').filter(Boolean);
+  
   return (
     <div className="ios-card">
       <div className="p-4 border-b border-ios-separator">
@@ -32,7 +37,7 @@ const DictionaryInfo: React.FC<DictionaryInfoProps> = ({ dictionary, onExport })
         </div>
         
         {categories.length > 0 && (
-          <div>
+          <div className="mb-4">
             <span className="text-sm text-ios-text-secondary">Категории: </span>
             <div className="flex flex-wrap gap-1 mt-1">
               {categories.map(category => (
