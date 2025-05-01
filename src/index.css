@@ -107,7 +107,7 @@
   }
   
   .ios-header {
-    @apply sticky top-0 z-10 bg-ios-card dark:bg-ios-card-dark px-4 py-2 flex items-center justify-between border-b border-ios-separator dark:border-ios-separator-dark;
+    @apply sticky top-0 z-10 bg-ios-card dark:bg-ios-card-dark flex items-center justify-between border-b border-ios-separator dark:border-ios-separator-dark;
   }
   
   .ios-card {
@@ -127,7 +127,7 @@
   }
   
   .ios-section-header {
-    @apply px-4 py-2 text-sm font-medium uppercase text-ios-text-secondary dark:text-ios-text-secondary-dark;
+    @apply px-4 py-2 text-sm font-medium uppercase;
   }
 
   .ios-tab-bar {

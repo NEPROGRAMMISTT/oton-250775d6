@@ -41,21 +41,21 @@ const TranslationResults: React.FC<TranslationResultsProps> = ({
 
   return (
     <div className="ios-card overflow-hidden">
-      <div className="flex justify-between px-4 py-3 border-b border-ios-separator">
+      <div className="flex justify-between px-4 py-3 border-b border-ios-separator dark:border-ios-separator-dark">
         <div className="font-medium">{fromLanguage}</div>
         <div className="font-medium">{toLanguage}</div>
       </div>
       
       {results.length === 0 ? (
-        <div className="p-4 text-center text-ios-text-secondary">
+        <div className="p-4 text-center text-ios-text-secondary dark:text-ios-text-secondary-dark">
           {sourceText ? 'Перевод не найден' : 'Введите текст для перевода'}
         </div>
       ) : (
         <div>
           {/* Full translation display */}
-          <div className="p-4 border-b border-ios-separator">
+          <div className="p-4 border-b border-ios-separator dark:border-ios-separator-dark">
             <h3 className="font-medium mb-2">Полный перевод:</h3>
-            <div className="bg-ios-background p-3 rounded-lg whitespace-pre-wrap break-words">
+            <div className="bg-ios-background dark:bg-ios-background-dark p-3 rounded-lg whitespace-pre-wrap break-words text-ios-text dark:text-ios-text-dark">
               {translatedText}
             </div>
           </div>
@@ -76,11 +76,13 @@ const TranslationResults: React.FC<TranslationResultsProps> = ({
             
             {showDictionary && Object.entries(resultsByCategory).map(([category, words]) => (
               <div key={category}>
-                <div className="ios-section-header">{category}</div>
+                <div className="ios-section-header bg-ios-background dark:bg-ios-background-dark text-ios-text-secondary dark:text-ios-text-secondary-dark">
+                  {category}
+                </div>
                 {words.map((word, index) => (
                   <div key={index} className="ios-list-item last:border-b-0">
                     <div className="font-medium">{word.russian}</div>
-                    <div className="text-ios-primary">{word.dolgan}</div>
+                    <div className="text-ios-primary dark:text-ios-primary-dark">{word.dolgan}</div>
                   </div>
                 ))}
               </div>

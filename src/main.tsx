@@ -23,6 +23,14 @@ if ('serviceWorker' in navigator) {
       .catch(error => {
         console.log('ServiceWorker registration failed:', error);
       });
+      
+    // Listen for service worker messages
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'CACHE_LIMIT_EXCEEDED') {
+        console.warn('Cache limit exceeded:', event.data.payload);
+        // Could show a notification here
+      }
+    });
   });
 }
 

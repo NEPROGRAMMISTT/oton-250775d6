@@ -1,3 +1,4 @@
+
 import { Dictionary } from "../types/dictionary";
 import { sampleDictionary } from "../data/sampleDictionary";
 
@@ -23,6 +24,46 @@ export const dictionaryService = {
       console.error("Error loading dictionaries:", error);
       return dictionaryService.initializeDefaultDictionaries();
     }
+  },
+
+  // Check cache size and limits
+  getCacheInfo: (): Promise<{size: number, maxSize: number, percentage: number}> => {
+    return new Promise((resolve) => {
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        const messageChannel = new MessageChannel();
+        
+        messageChannel.port1.onmessage = (event) => {
+          resolve(event.data);
+        };
+        
+        navigator.serviceWorker.controller.postMessage(
+          { action: 'GET_CACHE_INFO' },
+          [messageChannel.port2]
+        );
+      } else {
+        resolve({ size: 0, maxSize: 50 * 1024 * 1024, percentage: 0 });
+      }
+    });
+  },
+
+  // Clear cache
+  clearCache: (): Promise<{success: boolean, newSize: number}> => {
+    return new Promise((resolve) => {
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        const messageChannel = new MessageChannel();
+        
+        messageChannel.port1.onmessage = (event) => {
+          resolve(event.data);
+        };
+        
+        navigator.serviceWorker.controller.postMessage(
+          { action: 'CLEAR_CACHE' },
+          [messageChannel.port2]
+        );
+      } else {
+        resolve({ success: false, newSize: 0 });
+      }
+    });
   },
 
   // Initialize with default dictionaries including any from data folder

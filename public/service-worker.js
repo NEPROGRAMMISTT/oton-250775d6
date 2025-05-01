@@ -1,14 +1,60 @@
 
-const CACHE_NAME = 'ios-translator-cache-v1';
+const CACHE_NAME = 'ios-translator-cache-v2';
+const MAX_CACHE_SIZE_BYTES = 50 * 1024 * 1024; // 50MB limit for iOS
+let currentCacheSize = 0;
+
+// Resources that should always be cached
 const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
   '/favicon.ico',
   '/assets/index.css',
-  '/assets/index.js',
-  '/src/data/dolgan_language.json'
+  '/assets/index.js'
 ];
+
+// Get current cache size
+async function getCacheSize() {
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    const keys = await cache.keys();
+    const promises = keys.map(async (request) => {
+      const response = await cache.match(request);
+      if (!response) return 0;
+      const blob = await response.blob();
+      return blob.size;
+    });
+    
+    const sizes = await Promise.all(promises);
+    const totalSize = sizes.reduce((acc, size) => acc + size, 0);
+    currentCacheSize = totalSize;
+    
+    // Post message to client about current cache size
+    self.clients.matchAll().then(clients => {
+      clients.forEach(client => {
+        client.postMessage({
+          type: 'CACHE_SIZE_UPDATED',
+          payload: {
+            size: currentCacheSize,
+            maxSize: MAX_CACHE_SIZE_BYTES,
+            percentage: (currentCacheSize / MAX_CACHE_SIZE_BYTES) * 100
+          }
+        });
+      });
+    });
+    
+    return totalSize;
+  } catch (error) {
+    console.error('Error calculating cache size:', error);
+    return 0;
+  }
+}
+
+// Check if cache will exceed the limit after adding a new item
+async function willExceedCacheLimit(newItemSize) {
+  const currentSize = await getCacheSize();
+  return (currentSize + newItemSize) > MAX_CACHE_SIZE_BYTES;
+}
 
 // Установка и предварительное кэширование ресурсов
 self.addEventListener('install', (event) => {
@@ -16,46 +62,108 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        return cache.addAll(urlsToCache)
+          .then(() => getCacheSize());
       })
   );
 });
 
-// Стратегия кэширования: сначала кэш, затем сеть 
+// Intercept cache management messages
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.action === 'GET_CACHE_INFO') {
+    getCacheSize().then(size => {
+      event.ports[0].postMessage({
+        size: currentCacheSize,
+        maxSize: MAX_CACHE_SIZE_BYTES,
+        percentage: (currentCacheSize / MAX_CACHE_SIZE_BYTES) * 100
+      });
+    });
+  }
+  
+  if (event.data && event.data.action === 'CLEAR_CACHE') {
+    caches.delete(CACHE_NAME).then(() => {
+      caches.open(CACHE_NAME).then(cache => {
+        cache.addAll(urlsToCache).then(() => {
+          getCacheSize().then(size => {
+            event.ports[0].postMessage({ success: true, newSize: size });
+          });
+        });
+      });
+    });
+  }
+});
+
+// Стратегия кэширования с проверкой размера кэша
 self.addEventListener('fetch', (event) => {
+  // Skip browser-extension requests and non-GET requests
+  if (event.request.url.startsWith('chrome-extension://') || 
+      event.request.method !== 'GET') {
+    return;
+  }
+  
+  // For dictionary files, apply special caching logic
+  const isDictionary = event.request.url.includes('/data/') && 
+                       event.request.url.includes('.json');
+  
   event.respondWith(
     caches.match(event.request)
-      .then((response) => {
-        // Возвращаем кэшированный ответ, если он есть
-        if (response) {
-          return response;
+      .then((cachedResponse) => {
+        // Return cached response if it exists
+        if (cachedResponse) {
+          return cachedResponse;
         }
 
-        // Клонируем запрос, так как он может быть использован только один раз
-        const fetchRequest = event.request.clone();
-
-        // Пробуем получить ресурс из сети
-        return fetch(fetchRequest)
-          .then((response) => {
-            // Проверяем действительно ли получен ответ
+        // Fetch from network
+        return fetch(event.request.clone())
+          .then(async (response) => {
+            // Check if we got a valid response
             if (!response || response.status !== 200 || response.type !== 'basic') {
               return response;
             }
-
-            // Клонируем ответ, так как он тоже может быть использован только один раз
+            
+            // Clone the response as it can only be consumed once
             const responseToCache = response.clone();
-
-            // Добавляем ответ в кэш для будущего использования
+            
+            // For dictionary files, check cache size before storing
+            if (isDictionary) {
+              const blob = await responseToCache.clone().blob();
+              const willExceed = await willExceedCacheLimit(blob.size);
+              
+              if (willExceed) {
+                console.warn('Cache limit would be exceeded. Not caching:', event.request.url);
+                
+                // Notify clients that cache limit would be exceeded
+                self.clients.matchAll().then(clients => {
+                  clients.forEach(client => {
+                    client.postMessage({
+                      type: 'CACHE_LIMIT_EXCEEDED',
+                      payload: {
+                        url: event.request.url,
+                        fileSize: blob.size,
+                        currentSize: currentCacheSize,
+                        maxSize: MAX_CACHE_SIZE_BYTES
+                      }
+                    });
+                  });
+                });
+                
+                return response;
+              }
+            }
+            
+            // Store the fetched response in cache
             caches.open(CACHE_NAME)
               .then((cache) => {
-                cache.put(event.request, responseToCache);
+                cache.put(event.request, responseToCache).then(() => {
+                  // Update cache size after adding new item
+                  getCacheSize();
+                });
               });
 
             return response;
           })
           .catch(() => {
-            // Если произошла ошибка при запросе (например, нет соединения),
-            // и запрос был за HTML страницей, возвращаем кэшированную домашнюю страницу
+            // If network request fails, try to return cached homepage for navigation requests
             if (event.request.url.indexOf('.html') > -1 || 
                 event.request.url.endsWith('/') ||
                 event.request.headers.get('accept').includes('text/html')) {
@@ -79,6 +187,9 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
+    }).then(() => {
+      // Update cache size after activation
+      getCacheSize();
     })
   );
 });
