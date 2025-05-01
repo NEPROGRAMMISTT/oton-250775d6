@@ -1,3 +1,4 @@
+
 import { Dictionary } from "../types/dictionary";
 import { sampleDictionary } from "../data/sampleDictionary";
 
@@ -17,11 +18,21 @@ export const dictionaryService = {
         }
       }
       
-      // If no dictionaries, initialize with defaults
-      return dictionaryService.initializeDefaultDictionaries();
+      // If no dictionaries, initialize with defaults and return them synchronously
+      const defaultDictionaries = [sampleDictionary];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultDictionaries));
+      
+      // Start the async loading in the background, but don't wait for it
+      dictionaryService.initializeDefaultDictionaries().catch(error => {
+        console.error("Error initializing dictionaries:", error);
+      });
+      
+      return defaultDictionaries;
     } catch (error) {
       console.error("Error loading dictionaries:", error);
-      return dictionaryService.initializeDefaultDictionaries();
+      const defaultDictionaries = [sampleDictionary];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultDictionaries));
+      return defaultDictionaries;
     }
   },
 
