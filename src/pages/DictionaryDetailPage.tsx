@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import NavigationBar from '../components/NavigationBar';
@@ -115,7 +114,7 @@ const DictionaryDetailPage: React.FC = () => {
     return (
       <div className="ios-container">
         <NavigationBar title="Словарь" showBackButton />
-        <div className="p-4 pt-20 text-center">Загрузка...</div>
+        <div className="p-4 text-center">Загрузка...</div>
       </div>
     );
   }
