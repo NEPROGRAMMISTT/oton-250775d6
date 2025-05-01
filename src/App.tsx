@@ -8,7 +8,6 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import DictionariesPage from "./pages/DictionariesPage";
 import DictionaryDetailPage from "./pages/DictionaryDetailPage";
-import DictionaryEditorPage from "./pages/DictionaryEditorPage";
 
 const queryClient = new QueryClient();
 
@@ -22,7 +21,6 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/dictionaries" element={<DictionariesPage />} />
           <Route path="/dictionary/:id" element={<DictionaryDetailPage />} />
-          <Route path="/dictionary/edit/:id" element={<DictionaryEditorPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
