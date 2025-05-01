@@ -50,6 +50,30 @@ async function getCacheSize() {
   }
 }
 
+// Get list of cached dictionaries
+async function getCachedDictionaries() {
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    const keys = await cache.keys();
+    const dictionaryFiles = keys
+      .filter(request => 
+        request.url.includes('/data/') && 
+        request.url.includes('.json')
+      )
+      .map(request => {
+        // Extract just the filename from the URL
+        const url = new URL(request.url);
+        const pathParts = url.pathname.split('/');
+        return pathParts[pathParts.length - 1];
+      });
+      
+    return dictionaryFiles;
+  } catch (error) {
+    console.error('Error getting cached dictionaries:', error);
+    return [];
+  }
+}
+
 // Check if cache will exceed the limit after adding a new item
 async function willExceedCacheLimit(newItemSize) {
   const currentSize = await getCacheSize();
@@ -76,6 +100,14 @@ self.addEventListener('message', (event) => {
         size: currentCacheSize,
         maxSize: MAX_CACHE_SIZE_BYTES,
         percentage: (currentCacheSize / MAX_CACHE_SIZE_BYTES) * 100
+      });
+    });
+  }
+  
+  if (event.data && event.data.action === 'GET_CACHED_DICTIONARIES') {
+    getCachedDictionaries().then(dictionaries => {
+      event.ports[0].postMessage({
+        dictionaries
       });
     });
   }
@@ -157,6 +189,22 @@ self.addEventListener('fetch', (event) => {
                 cache.put(event.request, responseToCache).then(() => {
                   // Update cache size after adding new item
                   getCacheSize();
+                  
+                  // If it's a dictionary, update the dictionary list
+                  if (isDictionary) {
+                    getCachedDictionaries().then(dictionaries => {
+                      self.clients.matchAll().then(clients => {
+                        clients.forEach(client => {
+                          client.postMessage({
+                            type: 'DICTIONARIES_UPDATED',
+                            payload: {
+                              dictionaries
+                            }
+                          });
+                        });
+                      });
+                    });
+                  }
                 });
               });
 

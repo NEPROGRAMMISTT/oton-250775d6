@@ -58,6 +58,26 @@ export const dictionaryService = {
     });
   },
 
+  // Get list of cached dictionaries
+  getCachedDictionaryList: (): Promise<string[]> => {
+    return new Promise((resolve) => {
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        const messageChannel = new MessageChannel();
+        
+        messageChannel.port1.onmessage = (event) => {
+          resolve(event.data.dictionaries || []);
+        };
+        
+        navigator.serviceWorker.controller.postMessage(
+          { action: 'GET_CACHED_DICTIONARIES' },
+          [messageChannel.port2]
+        );
+      } else {
+        resolve([]);
+      }
+    });
+  },
+
   // Clear cache
   clearCache: (): Promise<{success: boolean, newSize: number}> => {
     return new Promise((resolve) => {
