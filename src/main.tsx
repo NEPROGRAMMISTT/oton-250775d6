@@ -2,7 +2,6 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import { dictionaryService } from './services/dictionaryService.ts'
 
 // Регистрация ServiceWorker для обеспечения офлайн-функциональности
 if ('serviceWorker' in navigator) {
@@ -11,13 +10,15 @@ if ('serviceWorker' in navigator) {
       .then(registration => {
         console.log('ServiceWorker registered successfully:', registration.scope);
         
-        // Initialize dictionaries on app start
-        dictionaryService.initializeDefaultDictionaries()
-          .then(() => {
-            console.info('Dictionaries initialized successfully');
+        // Предзагрузка словаря долганского языка в кэш
+        fetch('/src/data/dolgan_language.json')
+          .then(response => {
+            if (response.ok) {
+              console.info('Успешно загружен словарь долганского языка');
+            }
           })
           .catch(error => {
-            console.error('Error initializing dictionaries:', error);
+            console.error('Error prefetching dolgan dictionary:', error);
           });
       })
       .catch(error => {

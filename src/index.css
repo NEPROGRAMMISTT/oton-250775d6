@@ -55,7 +55,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 217.2 91.2% 59.8%;
+    --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -90,47 +90,39 @@
   }
 
   body {
-    @apply bg-ios-background text-ios-text font-sans transition-colors duration-300;
+    @apply bg-ios-background text-ios-text font-sans;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-  .dark body {
-    @apply bg-ios-background-dark text-ios-text-dark;
   }
 }
 
 /* iOS-like styling with blue color theme */
 @layer components {
   .ios-container {
-    @apply mx-auto max-w-md min-h-screen bg-ios-background dark:bg-ios-background-dark;
+    @apply mx-auto max-w-md min-h-screen bg-ios-background;
   }
   
   .ios-header {
-    @apply sticky top-0 z-10 bg-ios-card dark:bg-ios-card-dark px-4 py-2 flex items-center justify-between border-b border-ios-separator dark:border-ios-separator-dark;
+    @apply sticky top-0 z-10 bg-ios-card px-4 py-2 flex items-center justify-between border-b border-ios-separator;
   }
   
   .ios-card {
-    @apply bg-ios-card dark:bg-ios-card-dark rounded-xl shadow-sm mb-3 overflow-hidden border border-ios-separator/30 dark:border-ios-separator-dark/30;
+    @apply bg-ios-card rounded-xl shadow-sm mb-3 overflow-hidden;
   }
   
   .ios-button {
-    @apply px-4 py-2 bg-ios-primary dark:bg-ios-primary-dark text-white font-medium rounded-lg transition-colors;
+    @apply px-4 py-2 bg-ios-primary text-white font-medium rounded-lg transition-colors;
   }
   
   .ios-input {
-    @apply w-full px-4 py-3 bg-[#EDF2FF] dark:bg-[#1F2B4A] rounded-lg border-none outline-none text-ios-text dark:text-ios-text-dark placeholder-ios-text-secondary dark:placeholder-ios-text-secondary-dark;
+    @apply w-full px-4 py-3 bg-[#EDF2FF] rounded-lg border-none outline-none text-ios-text placeholder-ios-text-secondary;
   }
   
   .ios-list-item {
-    @apply px-4 py-3 border-b border-ios-separator dark:border-ios-separator-dark flex items-center justify-between;
+    @apply px-4 py-3 border-b border-ios-separator flex items-center justify-between;
   }
   
   .ios-section-header {
-    @apply px-4 py-2 text-sm font-medium uppercase text-ios-text-secondary dark:text-ios-text-secondary-dark;
-  }
-
-  .ios-tab-bar {
-    @apply bg-ios-card dark:bg-ios-card-dark border-t border-ios-separator dark:border-ios-separator-dark;
+    @apply px-4 py-2 text-sm font-medium uppercase text-ios-text-secondary;
   }
 }
