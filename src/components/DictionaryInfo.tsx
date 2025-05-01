@@ -16,6 +16,9 @@ const DictionaryInfo: React.FC<DictionaryInfoProps> = ({ dictionary, onExport })
     ? info.categories 
     : info.categories.split(',').filter(Boolean);
   
+  // Extract parameters 
+  const parameters = info.parameters.split(',').filter(Boolean);
+  
   return (
     <div className="ios-card">
       <div className="p-4 border-b border-ios-separator dark:border-ios-separator-dark">
@@ -35,6 +38,22 @@ const DictionaryInfo: React.FC<DictionaryInfoProps> = ({ dictionary, onExport })
           <span className="text-sm text-ios-text-secondary dark:text-ios-text-secondary-dark">Кол-во слов: </span>
           <span>{dictionary.words.length}</span>
         </div>
+        
+        {parameters.length > 0 && (
+          <div className="mb-2">
+            <span className="text-sm text-ios-text-secondary dark:text-ios-text-secondary-dark">Параметры: </span>
+            <div className="flex flex-wrap gap-1 mt-1">
+              {parameters.map(param => (
+                <span 
+                  key={param}
+                  className="bg-ios-secondary/15 dark:bg-ios-secondary-dark/30 text-ios-text dark:text-ios-text-dark px-2 py-1 rounded-full text-xs"
+                >
+                  {param}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
         
         {categories.length > 0 && (
           <div className="mb-4">

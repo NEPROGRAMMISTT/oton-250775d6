@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Dictionary, DictionaryWord } from '../types/dictionary';
 
@@ -13,6 +12,15 @@ const TranslatorInput: React.FC<TranslatorInputProps> = ({
 }) => {
   const [inputText, setInputText] = React.useState('');
   const [dolganDictionary, setDolganDictionary] = useState<Record<string, string>>({});
+  
+  // Parse dictionary parameters
+  const dictionaryParams = dictionary.info.parameters?.split(',').reduce((acc, param) => {
+    const trimmedParam = param.trim();
+    if (trimmedParam) {
+      acc[trimmedParam] = true;
+    }
+    return acc;
+  }, {} as Record<string, boolean>) || {};
 
   // Load the dolgan_language.json dictionary for phrases
   useEffect(() => {
@@ -57,6 +65,33 @@ const TranslatorInput: React.FC<TranslatorInputProps> = ({
       wordDictionary.set(normalizeRussian(word.russian), word);
     });
     
+    // If no_probel parameter is enabled, translate each character independently
+    if (dictionaryParams.no_probel) {
+      const resultTokens: DictionaryWord[] = [];
+      
+      // Translate each character independently
+      for (let i = 0; i < processedText.length; i++) {
+        const char = processedText[i];
+        const normalizedChar = normalizeRussian(char);
+        
+        if (wordDictionary.has(normalizedChar)) {
+          const foundWord = wordDictionary.get(normalizedChar)!;
+          resultTokens.push({...foundWord});
+        } else {
+          // Character not found in dictionary
+          resultTokens.push({
+            category: "not-found",
+            russian: char,
+            dolgan: char
+          });
+        }
+      }
+      
+      onTranslate(text, resultTokens);
+      return;
+    }
+    
+    // Standard translation for dictionaries without no_probel parameter
     // First: split into tokens (words, punctuation, spaces)
     const tokens: string[] = processedText.match(/([а-яА-ЯёЁ]+)|([^а-яА-ЯёЁ\s]+|\s+)/g) || [];
     const resultTokens: DictionaryWord[] = [];
@@ -263,6 +298,11 @@ const TranslatorInput: React.FC<TranslatorInputProps> = ({
         className="ios-input min-h-[100px] resize-none w-full"
         placeholder="Введите текст на русском языке..."
       />
+      {dictionaryParams.no_probel && (
+        <div className="mt-2 text-xs text-ios-text-secondary">
+          Режим посимвольного перевода активирован
+        </div>
+      )}
     </div>
   );
 };

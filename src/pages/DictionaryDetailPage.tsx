@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import NavigationBar from '../components/NavigationBar';
@@ -132,7 +131,7 @@ const DictionaryDetailPage: React.FC = () => {
         }
       />
       
-      <div className="p-4 space-y-4">
+      <div className="p-4 pt-20 space-y-4">
         <DictionaryInfo dictionary={dictionary} onExport={handleExportDictionary} />
         
         <div className="ios-card p-4">

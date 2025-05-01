@@ -50,7 +50,7 @@ const DictionariesPage: React.FC = () => {
         }
       />
       
-      <div className="p-4 space-y-4">
+      <div className="p-4 pt-20 space-y-4">
         <div className={`${!isMobile ? 'grid grid-cols-2 gap-4' : 'space-y-4'}`}>
           <div>
             <h2 className="text-lg font-medium mb-2">Доступные словари</h2>

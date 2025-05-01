@@ -45,7 +45,7 @@ const TranslatorPage: React.FC = () => {
     <div className="ios-container pb-16 pt-14 max-w-full md:max-w-4xl lg:max-w-6xl mx-auto">
       <NavigationBar title="Переводчик" />
       
-      <div className="p-4 space-y-4">
+      <div className="p-4 pt-20 space-y-4">
         <div className="ios-card p-3">
           {/* Dictionary selector */}
           {activeDictionary && (
