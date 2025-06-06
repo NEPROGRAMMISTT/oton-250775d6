@@ -43,7 +43,7 @@ const DictionariesPage: React.FC = () => {
       <NavigationBar 
         title="Словари" 
         rightElement={
-          <Link to="/dictionary/edit/new" className="text-ios-text dark:text-ios-text-dark font-medium">
+          <Link to="/dictionary/edit/new\" className="text-ios-text dark:text-ios-text-dark font-medium">
             Создать
           </Link>
         }

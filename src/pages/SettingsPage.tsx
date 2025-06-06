@@ -52,7 +52,7 @@ const SettingsPage: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 {theme === 'dark' ? (
-                  <Moon className="text-ios-text dark:text-ios-text-dark" size={20} />
+                  <Moon className="text-ios-text dark:text-ios-text-dark\" size={20} />
                 ) : (
                   <Sun className="text-ios-text dark:text-ios-text-dark" size={20} />
                 )}
