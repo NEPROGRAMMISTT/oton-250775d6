@@ -1,86 +1,86 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 210 100% 97%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 184 25% 76%;
+    --foreground: 210 11% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 200 20% 70%;
+    --card-foreground: 210 11% 15%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 200 20% 70%;
+    --popover-foreground: 210 11% 15%;
 
-    --primary: 219 79% 41%;
+    --primary: 200 15% 45%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 217 91% 60%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 200 15% 50%;
+    --secondary-foreground: 210 11% 15%;
 
-    --muted: 214 100% 97%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 200 20% 65%;
+    --muted-foreground: 210 11% 25%;
 
-    --accent: 210 100% 96%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 200 20% 65%;
+    --accent-foreground: 210 11% 15%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 219 79% 41%;
+    --border: 200 15% 60%;
+    --input: 200 15% 60%;
+    --ring: 200 15% 45%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 200 20% 70%;
+    --sidebar-foreground: 210 11% 15%;
+    --sidebar-primary: 200 15% 45%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 200 20% 65%;
+    --sidebar-accent-foreground: 210 11% 15%;
+    --sidebar-border: 200 15% 60%;
+    --sidebar-ring: 200 15% 45%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 210 22% 22%;
+    --foreground: 210 40% 90%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 210 22% 27%;
+    --card-foreground: 210 40% 90%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 210 22% 27%;
+    --popover-foreground: 210 40% 90%;
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 200 15% 55%;
+    --primary-foreground: 210 11% 15%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 210 22% 32%;
+    --secondary-foreground: 210 40% 90%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 210 22% 32%;
+    --muted-foreground: 210 40% 70%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 210 22% 32%;
+    --accent-foreground: 210 40% 90%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 210 22% 32%;
+    --input: 210 22% 32%;
+    --ring: 200 15% 55%;
+
+    --sidebar-background: 210 22% 27%;
+    --sidebar-foreground: 210 40% 90%;
+    --sidebar-primary: 200 15% 55%;
+    --sidebar-primary-foreground: 210 11% 15%;
+    --sidebar-accent: 210 22% 32%;
+    --sidebar-accent-foreground: 210 40% 90%;
+    --sidebar-border: 210 22% 32%;
+    --sidebar-ring: 200 15% 55%;
   }
 }
 
@@ -100,14 +100,14 @@
   }
 }
 
-/* iOS-like styling with blue color theme */
+/* iOS-like styling with blue-gray color theme */
 @layer components {
   .ios-container {
     @apply mx-auto max-w-md min-h-screen bg-ios-background dark:bg-ios-background-dark;
   }
   
   .ios-header {
-    @apply sticky top-0 z-10 bg-ios-card dark:bg-ios-card-dark flex items-center justify-between border-b border-ios-separator dark:border-ios-separator-dark;
+    @apply sticky top-0 z-10 bg-ios-background dark:bg-ios-background-dark flex items-center justify-center border-b border-ios-separator dark:border-ios-separator-dark;
   }
   
   .ios-card {
@@ -119,7 +119,7 @@
   }
   
   .ios-input {
-    @apply w-full px-4 py-3 bg-[#EDF2FF] dark:bg-[#1F2B4A] rounded-lg border-none outline-none text-ios-text dark:text-ios-text-dark placeholder-ios-text-secondary dark:placeholder-ios-text-secondary-dark;
+    @apply w-full px-4 py-3 bg-transparent rounded-lg border-none outline-none text-ios-text dark:text-ios-text-dark placeholder-ios-text-secondary dark:placeholder-ios-text-secondary-dark resize-none;
   }
   
   .ios-list-item {
@@ -131,6 +131,50 @@
   }
 
   .ios-tab-bar {
-    @apply bg-ios-card dark:bg-ios-card-dark border-t border-ios-separator dark:border-ios-separator-dark;
+    @apply bg-ios-background dark:bg-ios-background-dark border-t border-ios-separator dark:border-ios-separator-dark;
+  }
+
+  .translator-container {
+    @apply flex flex-col h-screen bg-ios-background dark:bg-ios-background-dark;
+  }
+
+  .translator-header {
+    @apply flex items-center justify-center py-4 px-6;
+  }
+
+  .translator-title {
+    @apply text-xl font-semibold text-ios-text dark:text-ios-text-dark;
+  }
+
+  .translator-content {
+    @apply flex-1 flex flex-col px-6 pb-20;
+  }
+
+  .text-section {
+    @apply mb-6;
+  }
+
+  .section-label {
+    @apply text-sm font-medium text-ios-text-secondary dark:text-ios-text-secondary-dark mb-2;
+  }
+
+  .text-area {
+    @apply min-h-[120px] bg-transparent border-none outline-none text-ios-text dark:text-ios-text-dark placeholder-ios-text-secondary dark:placeholder-ios-text-secondary-dark resize-none text-base leading-relaxed;
+  }
+
+  .language-selector {
+    @apply flex items-center justify-center py-4 border-t border-b border-ios-separator dark:border-ios-separator-dark;
+  }
+
+  .language-text {
+    @apply text-sm text-ios-text-secondary dark:text-ios-text-secondary-dark;
+  }
+
+  .action-buttons {
+    @apply flex items-center justify-center space-x-6 py-4;
+  }
+
+  .action-button {
+    @apply p-3 rounded-full bg-ios-card dark:bg-ios-card-dark border border-ios-separator dark:border-ios-separator-dark;
   }
 }

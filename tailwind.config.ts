@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -25,34 +24,34 @@ export default {
 			colors: {
 				ios: {
 					background: {
-						DEFAULT: '#F0F5FF',  // Light blue background
-						dark: '#0A101F'      // Dark mode background
+						DEFAULT: '#B8C5D1',  // Light blue-gray background from screenshot
+						dark: '#2C3E50'      // Dark blue-gray background from screenshot
 					},
 					card: {
-						DEFAULT: '#FFFFFF',   // Light mode card
-						dark: '#1A2035'       // Dark mode card
+						DEFAULT: '#A8B8C8',   // Slightly darker blue-gray for cards
+						dark: '#34495E'       // Darker blue-gray for dark mode cards
 					},
 					primary: {
-						DEFAULT: '#1E40AF',   // Deep blue as primary color
-						dark: '#3B82F6'       // Lighter blue for dark mode
+						DEFAULT: '#5A6C7D',   // Medium blue-gray
+						dark: '#7F8C8D'       // Lighter blue-gray for dark mode
 					},
 					secondary: {
-						DEFAULT: '#3B82F6',   // Medium blue as secondary
-						dark: '#60A5FA'       // Lighter secondary for dark mode
+						DEFAULT: '#6C7B7F',   // Blue-gray secondary
+						dark: '#95A5A6'       // Lighter secondary for dark mode
 					},
 					gray: '#8E8E93',
 					lightgray: '#D1D1D6',
 					separator: {
-						DEFAULT: '#C6C6C8',   // Light mode separator
-						dark: '#2A2F45'       // Dark mode separator
+						DEFAULT: '#9EAAB5',   // Light mode separator
+						dark: '#4A5568'       // Dark mode separator
 					},
 					text: {
-						DEFAULT: '#1E293B',   // Dark blue text for light mode
-						dark: '#E5E7EB'       // Light text for dark mode
+						DEFAULT: '#2D3748',   // Dark text for light mode
+						dark: '#E2E8F0'       // Light text for dark mode
 					},
 					'text-secondary': {
-						DEFAULT: '#64748B',   // Slate blue secondary text for light mode
-						dark: '#94A3B8'       // Lighter secondary text for dark mode
+						DEFAULT: '#4A5568',   // Secondary text for light mode
+						dark: '#A0AEC0'       // Lighter secondary text for dark mode
 					},
 				},
 				border: 'hsl(var(--border))',

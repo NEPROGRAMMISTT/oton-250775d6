@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import NavigationBar from '../components/NavigationBar';
 import TabBar from '../components/TabBar';
@@ -9,6 +8,7 @@ import { Sun, Moon, HardDriveDownload } from 'lucide-react';
 import { useIsMobile } from '../hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { dictionaryService } from '../services/dictionaryService';
 
 const SettingsPage: React.FC = () => {
   const { theme, setTheme } = useTheme();
@@ -16,15 +16,6 @@ const SettingsPage: React.FC = () => {
   
   const handleToggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
-
-  // Format bytes to human-readable format
-  const formatBytes = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   const handleImportDictionary = () => {
@@ -50,22 +41,22 @@ const SettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="ios-container pb-16 pt-14 max-w-full md:max-w-4xl lg:max-w-6xl mx-auto">
+    <div className="ios-container pb-16 pt-14 max-w-full md:max-w-4xl lg:max-w-6xl mx-auto bg-ios-background dark:bg-ios-background-dark">
       <NavigationBar title="Настройки" />
       
       <div className="p-4 space-y-4">
         <div className="ios-card">
           <div className="p-4">
-            <h2 className="text-lg font-medium mb-4">Внешний вид</h2>
+            <h2 className="text-lg font-medium mb-4 text-ios-text dark:text-ios-text-dark">Внешний вид</h2>
             
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 {theme === 'dark' ? (
-                  <Moon className="text-ios-primary" size={20} />
+                  <Moon className="text-ios-text dark:text-ios-text-dark" size={20} />
                 ) : (
-                  <Sun className="text-ios-primary" size={20} />
+                  <Sun className="text-ios-text dark:text-ios-text-dark" size={20} />
                 )}
-                <Label htmlFor="theme-toggle" className="font-medium">
+                <Label htmlFor="theme-toggle" className="font-medium text-ios-text dark:text-ios-text-dark">
                   Тёмная тема
                 </Label>
               </div>
@@ -80,7 +71,7 @@ const SettingsPage: React.FC = () => {
         
         <div className="ios-card">
           <div className="p-4">
-            <h2 className="text-lg font-medium mb-4">Управление словарями</h2>
+            <h2 className="text-lg font-medium mb-4 text-ios-text dark:text-ios-text-dark">Управление словарями</h2>
             
             <div className="space-y-4">
               <div className="flex flex-wrap gap-3">
@@ -99,11 +90,11 @@ const SettingsPage: React.FC = () => {
         
         <div className="ios-card">
           <div className="p-4">
-            <h2 className="text-lg font-medium mb-2">О приложении</h2>
-            <p className="text-ios-text-secondary">
+            <h2 className="text-lg font-medium mb-2 text-ios-text dark:text-ios-text-dark">О приложении</h2>
+            <p className="text-ios-text-secondary dark:text-ios-text-secondary-dark">
               Переводчик с поддержкой различных языков
             </p>
-            <p className="text-ios-text-secondary mt-2">
+            <p className="text-ios-text-secondary dark:text-ios-text-secondary-dark mt-2">
               Версия: 1.0.0
             </p>
           </div>

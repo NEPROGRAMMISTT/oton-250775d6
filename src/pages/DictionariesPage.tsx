@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import NavigationBar from '../components/NavigationBar';
@@ -40,11 +39,11 @@ const DictionariesPage: React.FC = () => {
   };
 
   return (
-    <div className="ios-container pb-16 pt-14 max-w-full md:max-w-4xl lg:max-w-6xl mx-auto">
+    <div className="ios-container pb-16 pt-14 max-w-full md:max-w-4xl lg:max-w-6xl mx-auto bg-ios-background dark:bg-ios-background-dark">
       <NavigationBar 
         title="Словари" 
         rightElement={
-          <Link to="/dictionary/edit/new" className="text-ios-primary font-medium">
+          <Link to="/dictionary/edit/new" className="text-ios-text dark:text-ios-text-dark font-medium">
             Создать
           </Link>
         }
@@ -53,7 +52,7 @@ const DictionariesPage: React.FC = () => {
       <div className="p-4 pt-20 space-y-4">
         <div className={`${!isMobile ? 'grid grid-cols-2 gap-4' : 'space-y-4'}`}>
           <div>
-            <h2 className="text-lg font-medium mb-2">Доступные словари</h2>
+            <h2 className="text-lg font-medium mb-2 text-ios-text dark:text-ios-text-dark">Доступные словари</h2>
             <DictionaryList 
               dictionaries={dictionaries} 
               onDeleteDictionary={handleDeleteDictionary} 
@@ -61,7 +60,7 @@ const DictionariesPage: React.FC = () => {
           </div>
           
           <div>
-            <h2 className="text-lg font-medium mb-2">Импортировать словарь</h2>
+            <h2 className="text-lg font-medium mb-2 text-ios-text dark:text-ios-text-dark">Импортировать словарь</h2>
             <DictionaryImport onImport={handleImportDictionary} />
           </div>
         </div>
